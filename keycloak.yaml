@@ -9,10 +9,10 @@
     keycloak_frontend_url: "http://localhost:8080/auth"
     keycloak_external_port: 8080
     keycloak_db_vendor: h2
-    keycloak_db_addr: localhost
+    keycloak_db_addr: ''
     keycloak_db_database: keycloak
-    keycloak_db_user: keycloak
-    keycloak_db_password: default_moment
+    keycloak_db_user: ''
+    keycloak_db_password: ''
   tasks:
     - name: Install aptitude using apt
       apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
