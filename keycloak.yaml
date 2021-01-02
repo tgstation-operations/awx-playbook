@@ -7,6 +7,7 @@
     ansible_python_interpreter: /usr/bin/python3
     # Everything below are defaults and generally intended to be overidden in the template
     keycloak_frontend_url: "http://localhost:8080/auth"
+    keycloak_container_name: keycloak
     keycloak_external_http_port: 80
     keycloak_external_https_port: 443
     keycloak_db_vendor: h2
@@ -41,7 +42,7 @@
 
     - name: Create Keycloak container
       docker_container:
-        name: keycloak
+        name: "{{ keycloak_container_name }}"
         image: "{{ keycloak_container_image }}"
         state: started
         restart: yes
