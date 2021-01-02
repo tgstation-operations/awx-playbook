@@ -4,8 +4,6 @@
     - name: Create keycloak user
       user:
         name: keycloak
-        groups: 
-          - keycloak
         shell: /usr/sbin/nologin
         append: yes
         comment: "Keycloak service user"
