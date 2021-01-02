@@ -6,6 +6,7 @@
   vars:
     ansible_python_interpreter: /usr/bin/python3
     # Everything below are defaults and generally intended to be overidden in the template
+    postgres_container_name: postgres
     postgres_db: postgres
     postgres_user: postgres
     keycloak_frontend_url: "http://localhost:8080/auth"
@@ -30,8 +31,11 @@
         repo: deb https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable
         state: present
 
-    - name: Update apt and install docker-ce
-      apt: update_cache=yes name=docker-ce state=latest
+    - name: Update apt and install docker packages
+      apt: update_cache=yes name={{ item }} state=latest
+      loop: [ 'docker-ce', 'docker-compose' ]
+
+    - name: Update apt 
 
     - name: Install Docker Module for Python
       pip:
@@ -63,7 +67,7 @@
                 KEYCLOAK_PASSWORD: "{{ default_keycloak_password }}"
                 KEYCLOAK_FRONTEND_URL: "{{ keycloak_frontend_url }}"
                 DB_VENDOR: postgres
-                DB_ADDR: postgres
+                DB_ADDR: "{{ postgres_container_name }}"
                 DB_DATABASE: "{{ postgres_db }}"
                 DB_USER: "{{ postgres_user }}"
                 DB_PASSWORD: "{{ postgres_password }}"
