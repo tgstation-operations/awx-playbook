@@ -1,12 +1,14 @@
 - name: Keycloak Setup Playbook
   hosts: all
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
   tasks:
     - name: Install aptitude using apt
       apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
 
     - name: Install required system packages
       apt: name={{ item }} state=latest update_cache=yes
-      loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'gnupg-agent', 'software-properties-common' ]
+      loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'gnupg-agent', 'software-properties-common', 'python3-pip', 'virtualenv', 'python3-setuptools' ]
 
     - name: Add Docker GPG apt Key
       apt_key:
@@ -20,9 +22,6 @@
 
     - name: Update apt and install docker-ce
       apt: update_cache=yes name=docker-ce state=latest
-
-    - name: Install python dependencies
-      apt: update_cache=yes name=python3-pip state=latest
 
     - name: Install Docker Module for Python
       pip:
