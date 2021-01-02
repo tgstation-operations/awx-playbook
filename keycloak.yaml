@@ -7,7 +7,8 @@
     ansible_python_interpreter: /usr/bin/python3
     # Everything below are defaults and generally intended to be overidden in the template
     keycloak_frontend_url: "http://localhost:8080/auth"
-    keycloak_external_port: 8080
+    keycloak_external_http_port: 80
+    keycloak_external_https_port: 443
     keycloak_db_vendor: h2
     keycloak_db_addr: ''
     keycloak_db_database: keycloak
@@ -45,7 +46,8 @@
         state: started
         restart: yes
         ports:
-          - "{{ keycloak_external_port }}:8080"
+          - "{{ keycloak_external_http_port }}:8080"
+          - "{{ keycloak_external_https_port }}:8443"
         env:
           KEYCLOAK_USER: "{{ default_keycloak_user }}"
           KEYCLOAK_PASSWORD: "{{ default_keycloak_password }}"
