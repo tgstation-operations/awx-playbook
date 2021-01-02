@@ -18,16 +18,10 @@
         group: keycloak
         mode: '0740'
 
-    - name: Download Keycloak
-      command: wget -O keycloak.tar.gz {{ keycloak_url|quote }}
+    - name: Download and extract Keycloak archive
+      unarchive:
+        src: '{{ keycloak_url }}'
+        dest: /etc/keycloak
+        remote_src: yes
       become: yes
       become_user: keycloak
-      args:
-        chdir: /etc/keycloak
-        creates: /etc/keycloak/keycloak.tar.gz
-
-    - name: Extract Keycloak archive
-      shell: tar -xvzf keycloak.tar.gz
-      args:
-        creates: /etc/keycloak/bin
-
