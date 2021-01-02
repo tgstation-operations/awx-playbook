@@ -23,7 +23,9 @@
 
     - name: Install Docker Module for Python
       pip:
-        name: docker
+        name:
+          - setuptools
+          - docker
 
     - name: Create keycloak container
       docker_container:
