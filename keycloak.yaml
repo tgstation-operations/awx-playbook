@@ -15,8 +15,6 @@
     keycloak_db_database: keycloak
     keycloak_db_user: ''
     keycloak_db_password: ''
-    keycloak_networks:
-      - name: keycloak
   tasks:
     - name: Install aptitude using apt
       apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
@@ -60,4 +58,3 @@
           DB_DATABASE: "{{ keycloak_db_database }}"
           DB_USER: "{{ keycloak_db_user }}"
           DB_PASSWORD: "{{ keycloak_db_password }}"
-        networks: "{{ keycloak_networks }}"

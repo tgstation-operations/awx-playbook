@@ -10,8 +10,6 @@
     postgres_external_port: 5432
     postgres_db: postgres
     postgres_user: postgres
-    postgres_networks:
-      - name: postgres
   tasks:
     - name: Install aptitude using apt
       apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
@@ -57,4 +55,3 @@
           POSTGRES_DB: "{{ postgres_db }}"
           POSTGRES_USER: "{{ postgres_user }}"
           POSTGRES_PASSWORD: "{{ postgres_password }}"
-        networks: "{{ postgres_networks }}"
