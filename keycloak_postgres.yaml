@@ -35,8 +35,6 @@
       apt: update_cache=yes name={{ item }} state=latest
       loop: [ 'docker-ce', 'docker-compose' ]
 
-    - name: Update apt 
-
     - name: Install Docker Module for Python
       pip:
         name: docker
