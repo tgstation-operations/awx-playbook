@@ -2,7 +2,7 @@
   hosts: all
   tasks:
     - name: Create Keycloak Container
-      community.general.docker_container:
+      docker_container:
         name: keycloak
         image: "{{ keycloak_container_image }}"
         state: started
