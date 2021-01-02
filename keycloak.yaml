@@ -1,0 +1,35 @@
+- name: Keycloak Setup Playbook
+  hosts: all
+  tasks:
+    - name: Create keycloak user
+      user:
+        name: keycloak
+        groups: 
+          - keycloak
+        shell: /usr/sbin/nologin
+        append: yes
+        comment: "Keycloak service user"
+        state: present
+      become: true
+
+    - name: Create keycloak directory
+      file:
+        path: /etc/keycloak
+        state: directory
+        owner: keycloak
+        group: keycloak
+        mode: '0740'
+
+    - name: Download Keycloak
+      command: wget -O keycloak.tar.gz {{ keycloak_url|quote }}
+      become: yes
+      become_user: keycloak
+      args:
+        chdir: /etc/keycloak
+        creates: /etc/keycloak/keycloak.tar.gz
+
+    - name: Extract Keycloak archive
+      shell: tar -xvzf keycloak.tar.gz
+      args:
+        creates: /etc/keycloak/bin
+
