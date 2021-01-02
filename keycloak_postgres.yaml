@@ -8,6 +8,7 @@
     # Everything below are defaults and generally intended to be overidden in the template
     postgres_db: postgres
     postgres_user: postgres
+    postgres_data_directory: /etc/postgres/postgres_keycloak
     keycloak_frontend_url: "http://localhost:8080/auth"
     keycloak_external_http_port: 80
     keycloak_external_https_port: 443
@@ -37,6 +38,12 @@
       pip:
         name: docker
 
+    - name: Create Postgres database storage directory
+      file:
+        path: "{{ postgres_data_directory }}"
+        state: directory
+        mode: '0740'
+
     - name: Create docker containers for postgres and keycloak
       docker_compose:
         project_name: keycloak_postgres
@@ -46,7 +53,7 @@
             postgres:
               image: "{{ postgres_container_image }}"
               volumes:
-                - /etc/postgres/postgres_keycloak:/var/lib/postgresql/data
+                - "{{ postgres_data_directory }}:/var/lib/postgresql/data"
               environment:
                 POSTGRES_DB: "{{ postgres_db }}"
                 POSTGRES_USER: "{{ postgres_user }}"
