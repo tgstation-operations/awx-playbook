@@ -42,7 +42,8 @@
       docker_container:
         name: keycloak
         image: "{{ keycloak_container_image }}"
-        state: present
+        state: started
+        restart: yes
         ports:
           - "{{ keycloak_external_port }}:8080"
         env:
