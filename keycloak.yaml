@@ -1,3 +1,6 @@
+# Big shoutout to my homies at DigitalOcean from which I could base the initial docker setup on
+# (https://www.digitalocean.com/community/tutorials/how-to-use-ansible-to-install-and-set-up-docker-on-ubuntu-18-04 but we're debian gang instead)
+
 - name: Keycloak Setup Playbook
   hosts: all
   vars:
@@ -27,13 +30,19 @@
       pip:
         name: docker
 
-    - name: Create keycloak container
+    - name: Create Keycloak container
       docker_container:
         name: keycloak
         image: "{{ keycloak_container_image }}"
         state: present
         ports:
-          - "8080:8080"
+          - "{{ keycloak_external_port }}:8080"
         env:
           KEYCLOAK_USER: "{{ default_keycloak_user }}"
           KEYCLOAK_PASSWORD: "{{ default_keycloak_password }}"
+          KEYCLOAK_FRONTEND_URL: "{{ keycloak_frontend_url }}"
+          DB_VENDOR: "{{ keycloak_db_vendor }}"
+          DB_ADDR: "{{ keycloak_db_addr }}"
+          DB_DATABASE: "{{ keycloak_db_database }}"
+          DB_USER: "{{ keycloak_db_user }}"
+          DB_PASSWORD: "{{ keycloak_db_password }}"
