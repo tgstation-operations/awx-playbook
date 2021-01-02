@@ -1,12 +1,13 @@
 # Big shoutout to my homies at DigitalOcean from which I could base the initial docker setup on
 # (https://www.digitalocean.com/community/tutorials/how-to-use-ansible-to-install-and-set-up-docker-on-ubuntu-18-04 but we're debian gang instead)
 
-- name: Keycloak Setup Playbook
+- name: Postgres Deployment Playbook
   hosts: all
   vars:
     ansible_python_interpreter: /usr/bin/python3
     # Everything below are defaults and generally intended to be overidden in the template
     postgres_container_name: postgres
+    postgres_external_port: 5432
   tasks:
     - name: Install aptitude using apt
       apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
@@ -45,7 +46,7 @@
         state: started
         restart: yes
         ports:
-          - "{{ postgres_external_port }}:8080"
+          - "{{ postgres_external_port }}:5432"
         volumes:
           - /etc/postgres-storage/{{ postgres_container_name }}:/var/lib/postgresql/data
         env:
