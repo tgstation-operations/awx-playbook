@@ -8,6 +8,8 @@
     # Everything below are defaults and generally intended to be overidden in the template
     postgres_container_name: postgres
     postgres_external_port: 5432
+    postgres_db: postgres
+    postgres_user: postgres
   tasks:
     - name: Install aptitude using apt
       apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
@@ -50,4 +52,6 @@
         volumes:
           - /etc/postgres-storage/{{ postgres_container_name }}:/var/lib/postgresql/data
         env:
+          POSTGRES_DB: "{{ postgres_db }}"
+          POSTGRES_USER: "{{ postgres_user }}"
           POSTGRES_PASSWORD: "{{ postgres_password }}"
