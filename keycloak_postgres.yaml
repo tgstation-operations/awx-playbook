@@ -6,11 +6,9 @@
   vars:
     ansible_python_interpreter: /usr/bin/python3
     # Everything below are defaults and generally intended to be overidden in the template
-    postgres_container_name: postgres
     postgres_db: postgres
     postgres_user: postgres
     keycloak_frontend_url: "http://localhost:8080/auth"
-    keycloak_container_name: keycloak
     keycloak_external_http_port: 80
     keycloak_external_https_port: 443
   tasks:
@@ -46,7 +44,6 @@
           version: "3"
           services:
             postgres:
-              name: "{{ postgres_container_name }}"
               image: "{{ postgres_container_image }}"
               volumes:
                 - /etc/postgres-storage/{{ postgres_container_name }}:/var/lib/postgresql/data
@@ -55,7 +52,6 @@
                 POSTGRES_USER: "{{ postgres_user }}"
                 POSTGRES_PASSWORD: "{{ postgres_password }}"
             keycloak:
-              name: "{{ keycloak_container_name }}"
               image: "{{ keycloak_container_image }}"
               ports:
                 - "{{ keycloak_external_http_port }}:8080"
@@ -65,7 +61,7 @@
                 KEYCLOAK_PASSWORD: "{{ default_keycloak_password }}"
                 KEYCLOAK_FRONTEND_URL: "{{ keycloak_frontend_url }}"
                 DB_VENDOR: postgres
-                DB_ADDR: "{{ postgres_container_name }}"
+                DB_ADDR: postgres
                 DB_DATABASE: "{{ postgres_db }}"
                 DB_USER: "{{ postgres_user }}"
                 DB_PASSWORD: "{{ postgres_password }}"
