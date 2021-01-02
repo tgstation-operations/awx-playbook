@@ -1,7 +1,10 @@
 - name: Keycloak Setup Playbook
   hosts: all
   tasks:
-    - name: Create Keycloak Container
+    - name: Install docker python package
+      pip:
+        name: docker
+    - name: Create keycloak container
       docker_container:
         name: keycloak
         image: "{{ keycloak_container_image }}"
