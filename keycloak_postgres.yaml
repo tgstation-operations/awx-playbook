@@ -46,7 +46,7 @@
             postgres:
               image: "{{ postgres_container_image }}"
               volumes:
-                - /etc/postgres-storage/{{ postgres_container_name }}:/var/lib/postgresql/data
+                - /etc/postgres/postgres_keycloak:/var/lib/postgresql/data
               env:
                 POSTGRES_DB: "{{ postgres_db }}"
                 POSTGRES_USER: "{{ postgres_user }}"
