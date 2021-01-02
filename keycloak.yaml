@@ -6,7 +6,7 @@
 
     - name: Install required system packages
       apt: name={{ item }} state=latest update_cache=yes
-      loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'gnupg-agent', 'software-properties-common']
+      loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'gnupg-agent', 'software-properties-common', 'python3-pip', 'virtualenv', 'python3-setuptools' ]
 
     - name: Add Docker GPG apt Key
       apt_key:
@@ -23,9 +23,7 @@
 
     - name: Install Docker Module for Python
       pip:
-        name:
-          - setuptools
-          - docker
+        name: docker
 
     - name: Create keycloak container
       docker_container:
