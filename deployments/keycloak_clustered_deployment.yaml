@@ -54,6 +54,7 @@
                 - '{{ keycloak_external_http_port }}:8080'
                 - '{{ keycloak_external_https_port }}:8443'
                 - '7600:7600' # Used for inter-host communications for clustered mode
+              restart: always
               environment:
                 KEYCLOAK_USER: '{{ default_keycloak_user }}'
                 KEYCLOAK_PASSWORD: '{{ default_keycloak_password }}'
