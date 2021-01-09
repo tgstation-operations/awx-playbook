@@ -2,8 +2,6 @@
   hosts: docker_swarm_manager
   vars:
     ansible_python_interpreter: /usr/bin/python3
-    # Extra labels to apply (merge) to the managing node.
-    node_labels: {}
   tasks:
     - name: Install aptitude using apt
       apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
@@ -35,7 +33,6 @@
     - name: Init new swarm
       docker_swarm:
         state: present
-        labels: '{{ node_labels }}'
       register: result
 
     - name: Publish the required secrets to be consumed by a workflow

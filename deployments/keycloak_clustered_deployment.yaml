@@ -61,7 +61,7 @@
               image: "{{ postgres_container_image }}"
               deploy:
                 placement:
-                  constraints: [ node.labels.postgres_host == true ]
+                  constraints: [ node.role == manager ]
               volumes:
                 - '{{ postgres_data_directory }}:/var/lib/postgresql/data'
               ports:
@@ -74,8 +74,6 @@
               image: '{{ keycloak_container_image }}' # See https://github.com/ivangfr/keycloak-clustered
               deploy:
                 mode: global
-                placement:
-                  constraints: [ node.labels.keycloak_worker == true ]
               ports:
                 - '{{ keycloak_external_http_port }}:8080'
                 - '{{ keycloak_external_https_port }}:8443'
