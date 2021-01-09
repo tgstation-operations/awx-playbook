@@ -5,6 +5,8 @@
   hosts: keycloak_target
   vars:
     ansible_python_interpreter: /usr/bin/python3
+    # Name of the container, used for Docker container naming
+    keycloak_container_name: keycloak
     # The URL that is used for the base of all routes for Keycloak
     keycloak_frontend_url: "http://localhost:8080/auth"
     # External HTTP port which will be exposed by Docker

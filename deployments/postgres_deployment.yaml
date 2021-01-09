@@ -5,9 +5,11 @@
   hosts: postgres_target
   vars:
     ansible_python_interpreter: /usr/bin/python3
-    # Everything below are defaults and generally intended to be overidden in the template
+    # Name of the container, dictates part of the local disk storage path, as well as the Docker container naming
     postgres_container_name: postgres
+    # The external port to expose for Postgres
     postgres_external_port: 5432
+    # The directory in which to mount the data directory from Postgres
     postgres_data_directory: /etc/postgres-storage/{{ postgres_container_name }}
   tasks:
     - name: Install aptitude using apt
