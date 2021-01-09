@@ -2,6 +2,7 @@
   hosts: all
   vars:
     ansible_python_interpreter: /usr/bin/python3
+    host_addr: '{{ ansible_default_ipv4.address }}'
   tasks:
     - name: Install aptitude using apt
       apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
@@ -10,6 +11,4 @@
       apt: name={{ item }} state=latest update_cache=yes
       loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'gnupg-agent', 'software-properties-common', 'python3-pip', 'virtualenv', 'python3-setuptools' ]
     
-    - debug: var=ansible_all_ipv4_addresses
-    
-    - debug: var=ansible_default_ipv4.address
+    - debug: var=host_addr
