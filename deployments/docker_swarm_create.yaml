@@ -35,6 +35,7 @@
     - name: Init new swarm
       docker_swarm:
         state: present
+        labels: '{{ node_labels }}'
       register: result
 
     - name: Publish the required secrets to be consumed by a workflow
@@ -43,7 +44,3 @@
           manager_secret_token: '{{ result.swarm_facts.JoinTokens.Manager }}'
           worker_secret_token: '{{ result.swarm_facts.JoinTokens.Worker }}'
           initial_manager_addr: '{{ ansible_default_ipv4.address }}'
-
-    - name: Add any defined labels to the manager node
-      docker_node:
-        labels: '{{ node_labels }}'

@@ -38,7 +38,4 @@
         advertise_addr: '{{ ansible_default_ipv4.address }}'
         join_token: '{{ worker_secret_token }}'
         remote_addrs: [ '{{ initial_manager_addr }}' ]
-
-    - name: Add any defined labels to the worker nodes
-      docker_node:
         labels: '{{ node_labels }}'
