@@ -2,6 +2,8 @@
   hosts: docker_swarm_manager
   vars:
     ansible_python_interpreter: /usr/bin/python3
+    # Extra labels to apply (merge) to the managing node.
+    node_labels: {}
   tasks:
     - name: Install aptitude using apt
       apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
@@ -41,3 +43,7 @@
           manager_secret_token: '{{ result.swarm_facts.JoinTokens.Manager }}'
           worker_secret_token: '{{ result.swarm_facts.JoinTokens.Worker }}'
           initial_manager_addr: '{{ ansible_default_ipv4.address }}'
+
+    - name: Add any defined labels to the manager node
+      docker_node:
+        labels: '{{ node_labels }}'
