@@ -50,7 +50,7 @@
 
     - name: Create Postgres database storage directory
       file:
-        path: /etc/postgres-storage/{{ postgres_container_name }}
+        path: '{{ postgres_data_directory }}'
         state: directory
         mode: '0740'
 
