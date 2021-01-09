@@ -39,8 +39,9 @@
 
     - name: Install required python modules
       pip:
-        name: '{{ item }}'
-        loop: [ 'docker', 'jsondiff', 'pyyaml' ]
+      - docker
+      - jsondiff
+      - pyyaml
 
     - name: Create keycloak container stack
       docker_stack:

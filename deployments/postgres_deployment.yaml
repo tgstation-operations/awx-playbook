@@ -34,8 +34,9 @@
 
     - name: Install required python modules
       pip:
-        name: '{{ item }}'
-        loop: [ 'docker', 'jsondiff', 'pyyaml' ]
+      - docker
+      - jsondiff
+      - pyyaml
 
     - name: Create Postgres database storage directory
       file:
