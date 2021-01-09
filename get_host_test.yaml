@@ -1,0 +1,14 @@
+- name: Keycloak and Postgres Combined Deployment
+  hosts: all
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+    # Everything below are defaults and generally intended to be overidden in the template
+    postgres_db: postgres
+    postgres_user: postgres
+    postgres_data_directory: /etc/postgres/postgres_keycloak
+    keycloak_frontend_url: "http://localhost:8080/auth"
+    keycloak_external_http_port: 80
+    keycloak_external_https_port: 443
+  tasks:
+    - debug: var=ansible_all_ipv4_addresses
+    - debug: var=ansible_default_ipv4.address

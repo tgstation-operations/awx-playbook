@@ -44,11 +44,12 @@
         state: directory
         mode: '0740'
 
-    - name: Create docker containers for postgres and keycloak
-      docker_compose:
-        project_name: keycloak_postgres
-        definition:
-          version: "3"
+    - name: Create docker stack for postgres and keycloak
+      docker_stack:
+        name: pg_keycloak
+        state: present
+        compose:
+        - version: "3"
           services:
             postgres:
               image: "{{ postgres_container_image }}"
