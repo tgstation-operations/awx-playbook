@@ -50,6 +50,12 @@
         - jsondiff
         - pyyaml
 
+    - name: Create Postgres database storage directory
+      file:
+        path: /etc/postgres-storage/{{ postgres_container_name }}
+        state: directory
+        mode: '0740'
+
     - name: Create keycloak container stack
       docker_stack:
         name: '{{ keycloak_container_name }}'
