@@ -5,14 +5,12 @@
   hosts: docker_swarm_manager
   vars:
     ansible_python_interpreter: /usr/bin/python3
-    # Name of the postgres container, dictates part of the local disk storage path
-    postgres_container_name: postgres
+    # Name of the keycloak container, used for Docker container naming and the postgres storage path
+    keycloak_container_name: keycloak
     # The external port to expose for Postgres
     postgres_external_port: 5432
     # The directory in which to mount the data directory from Postgres
-    postgres_data_directory: /etc/postgres-storage/{{ postgres_container_name }}
-    # Name of the keycloak container, used for Docker container naming
-    keycloak_container_name: keycloak
+    postgres_data_directory: /etc/postgres-storage/{{ keycloak_container_name }}
     # The URL that is used for the base of all routes for Keycloak
     keycloak_frontend_url: "http://localhost:8080/auth"
     # External HTTP port which will be exposed by Docker
