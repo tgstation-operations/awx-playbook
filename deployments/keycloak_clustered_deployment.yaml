@@ -39,9 +39,10 @@
 
     - name: Install required python modules
       pip:
-      - docker
-      - jsondiff
-      - pyyaml
+        name:
+        - docker
+        - jsondiff
+        - pyyaml
 
     - name: Create keycloak container stack
       docker_stack:

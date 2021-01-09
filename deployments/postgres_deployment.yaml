@@ -34,9 +34,10 @@
 
     - name: Install required python modules
       pip:
-      - docker
-      - jsondiff
-      - pyyaml
+        name:
+        - docker
+        - jsondiff
+        - pyyaml
 
     - name: Create Postgres database storage directory
       file:
