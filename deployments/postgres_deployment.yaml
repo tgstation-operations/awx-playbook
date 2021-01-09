@@ -32,9 +32,10 @@
     - name: Update apt and install docker-ce
       apt: update_cache=yes name=docker-ce state=latest
 
-    - name: Install Docker Module for Python
+    - name: Install required python modules
       pip:
-        name: docker
+        name: '{{ item }}'
+        loop: [ 'docker', 'jsondiff', 'pyyaml' ]
 
     - name: Create Postgres database storage directory
       file:

@@ -37,9 +37,10 @@
       apt: update_cache=yes name={{ item }} state=latest
       loop: [ 'docker-ce' ]
 
-    - name: Install Docker Module for Python
+    - name: Install required python modules
       pip:
-        name: docker
+        name: '{{ item }}'
+        loop: [ 'docker', 'jsondiff', 'pyyaml' ]
 
     - name: Create keycloak container stack
       docker_stack:
