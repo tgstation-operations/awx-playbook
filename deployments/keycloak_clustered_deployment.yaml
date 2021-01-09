@@ -1,0 +1,66 @@
+# Big shoutout to my homies at DigitalOcean from which I could base the initial docker setup on
+# (https://www.digitalocean.com/community/tutorials/how-to-use-ansible-to-install-and-set-up-docker-on-ubuntu-18-04 but we're debian gang instead)
+
+- name: Keycloak clustered deployment
+  hosts: keycloak_target
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+    # The URL that is used for the base of all routes for Keycloak
+    keycloak_frontend_url: "http://localhost:8080/auth"
+    # External HTTP port which will be exposed by Docker
+    keycloak_external_http_port: 80
+    # External HTTPS port which will be exposed by Docker
+    keycloak_external_https_port: 443
+    # Host address, used for JDBC ping. This is the IP used by the other hosts in the cluster to connect to this host.
+    host_addr: '{{ ansible_default_ipv4.address }}'
+  tasks:
+    - name: Install aptitude using apt
+      apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
+
+    - name: Install required system packages
+      apt: name={{ item }} state=latest update_cache=yes
+      loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'gnupg-agent', 'software-properties-common', 'python3-pip', 'virtualenv', 'python3-setuptools' ]
+
+    - name: Add Docker GPG apt Key
+      apt_key:
+        url: https://download.docker.com/linux/debian/gpg
+        state: present
+
+    - name: Add Docker Repository
+      apt_repository:
+        repo: deb https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable
+        state: present
+
+    - name: Update apt and install docker packages
+      apt: update_cache=yes name={{ item }} state=latest
+      loop: [ 'docker-ce' ]
+
+    - name: Install Docker Module for Python
+      pip:
+        name: docker
+
+    - name: Create keycloak container stack
+      docker_stack:
+        name: '{{ keycloak_container_name }}'
+        state: present
+        compose:
+        - version: "3"
+          services:
+            keycloak:
+              image: '{{ keycloak_container_image }}' # See https://github.com/ivangfr/keycloak-clustered
+              ports:
+                - '{{ keycloak_external_http_port }}:8080'
+                - '{{ keycloak_external_https_port }}:8443'
+                - '7600:7600' # Used for inter-host communications for clustered mode
+              environment:
+                KEYCLOAK_USER: '{{ default_keycloak_user }}'
+                KEYCLOAK_PASSWORD: '{{ default_keycloak_password }}'
+                KEYCLOAK_FRONTEND_URL: '{{ keycloak_frontend_url }}'
+                DB_VENDOR: postgres
+                DB_ADDR: '{{ postgres_address }}'
+                DB_DATABASE: '{{ postgres_db }}'
+                DB_USER: '{{ postgres_user }}'
+                DB_PASSWORD: '{{ postgres_password }}'
+                JGROUPS_DISCOVERY_EXTERNAL_IP: '{{ host_addr }}'
+                JGROUPS_DISCOVERY_PROTOCOL: JDBC_PING
+                JGROUPS_DISCOVERY_PROPERTIES=datasource_jndi_name: java:jboss/datasources/KeycloakDS
