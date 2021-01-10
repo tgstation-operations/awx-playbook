@@ -76,9 +76,12 @@
                 POSTGRES_PASSWORD: '{{ postgres_password }}'
             keycloak:
               image: '{{ keycloak_container_image }}' # See https://github.com/ivangfr/keycloak-clustered
-              network_mode: host # By using host networking we can leverage multicast discovery of nodes
               deploy:
                 mode: global
+              ports:
+                - '{{ keycloak_external_http_port }}:8080'
+                - '{{ keycloak_external_https_port }}:8443'
+                - '7600:7600' # Used for inter-host communications for clustered mode
               environment:
                 KEYCLOAK_USER: '{{ default_keycloak_user }}'
                 KEYCLOAK_PASSWORD: '{{ default_keycloak_password }}'
@@ -88,3 +91,5 @@
                 DB_DATABASE: '{{ postgres_db }}'
                 DB_USER: '{{ postgres_user }}'
                 DB_PASSWORD: '{{ postgres_password }}'
+                JGROUPS_DISCOVERY_PROTOCOL: JDBC_PING
+                JGROUPS_DISCOVERY_PROPERTIES=datasource_jndi_name: java:jboss/datasources/KeycloakDS
