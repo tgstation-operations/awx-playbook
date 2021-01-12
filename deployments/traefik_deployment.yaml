@@ -55,8 +55,6 @@
                 - /var/run/docker.sock:/var/run/docker.sock
                 - acme-store:/etc/traefik/acme/
                 - traefik-dyn:/etc/traefik/conf.d/
-              networks:
-                - traefik
               ports:
                 - target: 80
                   published: 80
@@ -78,10 +76,6 @@
                   delay: 10s
                 restart_policy:
                   condition: on-failure
-          networks:
-            traefik:
-              driver: overlay
-              external: true
           volumes:
             acme-store:
             traefik-dyn:
