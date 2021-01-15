@@ -45,7 +45,8 @@ docker_network_name: 'traefik'
 postgres_container_image: postgres:13.1
 keycloak_container_image: ivanfranchin/keycloak-clustered:12.0.1
 
-# Keycloak container name, used for naming of containers on individual hosts
+# Keycloak container name, used for naming of containers on individual hosts,
+# as well as dictating the folder name for the PostgreSQL data directory
 keycloak_container_name: keycloak_12_0_1
 
 # Keycloak configuration settings
