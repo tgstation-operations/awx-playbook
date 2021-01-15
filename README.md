@@ -2,6 +2,8 @@
 
 *Prepared for /tg/station operations*
 
+This project can be used to deploy a distributed Keycloak installation, which will have multiple Keycloak servers spread across different hosts backed with a PostgreSQL database.
+
 ## Included Playbooks
 
 Note that the file descriptions below occur in the order they were intended to be run within a workflow.
@@ -16,15 +18,15 @@ Joins worker nodes to the swarm, this relies on the variables set from the ``doc
 
 ### docker_swarm_network.yaml
 
-Ensures an overlay network is created for the docker swarm to support traefik's load balancing to the Keycloak instances. This should be run on a single manager node.
+Ensures an overlay network is created for the docker swarm to support Traefik's load balancing to the Keycloak instances. This should be run on a single manager node.
 
 ### keycloak_clustered_deployment.yaml
 
-Deploys a Keycloak service to every worker node, and deploys a PostgreSQL database to the manager node. The database backs the Keycloak instances for their persistent data, as well as facilitating the clustering behaviour through JDBC. Note the stack configuration puts the Keycloak services under the traefik network to expose them to a traefik container for load balancing.
+Deploys a Keycloak service to every worker node, and deploys a PostgreSQL database to the manager node. The database backs the Keycloak instances for their persistent data, as well as facilitating the clustering behaviour through JDBC. Note the stack configuration puts the Keycloak services under the Traefik network to expose them to a Traefik service for load balancing.
 
 ### traefik_deployment.yaml
 
-Deploys a traefik container to the manager node of the swarm. Note the stack configuration puts the service under the traefik network to allow for load-balancing access to the Keycloak containers.
+Deploys a Traefik service to the manager node of the swarm. Note the stack configuration puts the service under the Traefik network to allow for load-balancing access to the Keycloak service.
 
 ## Deployment
 
@@ -32,7 +34,7 @@ These playbooks should be run sequentially in the order defined above within a w
 
 ### Variables to configure
 
-The following variables should be configured on the workflow itself, or within their respective playbooks.
+The following variables should be configured on the workflow itself, or within their respective playbooks. This is not an exhaustive list, but rather what is required to run the deployment properly. There are further variables which can be configured and tweaked, found within the playbooks themselves.
 
 ```yaml
 # Docker network settings
@@ -62,4 +64,12 @@ keycloak_traefik_rule: 'Host(`localhost`) && PathPrefix(`/auth`)'
 
 ## Things to note
 
-The playbooks are not currently configured for using HTTPS, as the example traefik setup MSO gave me was, and should be modified to include this prior to final deployment.
+The playbooks are not currently configured for using HTTPS, as the example Traefik setup MSO gave me was, and should be modified to include this prior to final deployment.
+
+To perform backups of the PostgreSQL database, refer to the location defined in ``keycloak_clustered_deployment.yaml``, which should be:
+
+```yaml
+postgres_data_directory: /etc/postgres-storage/{{ keycloak_container_name }}
+```
+
+This is the data location used for the PostgreSQL database, and consequently could be used for backing up the database.
