@@ -5,6 +5,8 @@
   hosts: docker_swarm_manager
   vars:
     ansible_python_interpreter: /usr/bin/python3
+    # Rule used for matching traefik's control panel
+    traefik_external_rule: 'Host(`localhost`)'
   tasks:
     - name: Install aptitude using apt
       apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
@@ -40,9 +42,14 @@
         state: present
         compose:
         - version: "3.2"
+          networks:
+            traefik:
+              external: true
           services:
             traefik:
               image: traefik
+              networks:
+                - traefik
               command:
                 - "--api.insecure=true"
                 - "--entrypoints.http.address=:80"
@@ -65,7 +72,7 @@
               deploy:
                 labels:
                   - traefik.http.services.traefik-ext-srv.loadbalancer.server.port=8080
-                  - traefik.http.routers.traefik-ext.rule=Host(`172.28.5.241`)
+                  - 'traefik.http.routers.traefik-ext.rule={{ traefik_external_rule }}'
                   - traefik.http.routers.traefik-ext.service=api@internal
                 mode: global
                 placement:

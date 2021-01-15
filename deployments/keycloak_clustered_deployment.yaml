@@ -60,6 +60,9 @@
         state: present
         compose:
         - version: "3"
+          networks:
+            traefik:
+              external: true
           services:
             postgres:
               image: "{{ postgres_container_image }}"
@@ -76,12 +79,14 @@
                 POSTGRES_PASSWORD: '{{ postgres_password }}'
             keycloak:
               image: '{{ keycloak_container_image }}' # See https://github.com/ivangfr/keycloak-clustered
+              networks:
+                - traefik
               deploy:
                 mode: global
                 labels:
                   - 'traefik.http.routers.keycloak.rule={{ keycloak_traefik_rule }}'
                   - 'traefik.http.services.keycloak-service.loadbalancer.sticky=true'
-                  - 'traefik.http.services.keycloak-service.loadbalancer.server.port={{ keycloak_external_http_port }}'
+                  - 'traefik.http.services.keycloak-service.loadbalancer.server.port=8080'
               ports:
                 - '{{ keycloak_external_http_port }}:8080'
                 - '{{ keycloak_external_https_port }}:8443'
