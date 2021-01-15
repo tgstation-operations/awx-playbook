@@ -13,12 +13,6 @@
     postgres_data_directory: /etc/postgres-storage/{{ keycloak_container_name }}
     # The URL that is used for the base of all routes for Keycloak
     keycloak_frontend_url: "http://localhost:8080/auth"
-    # External HTTP port which will be exposed by Docker
-    keycloak_external_http_port: 80
-    # External HTTPS port which will be exposed by Docker
-    keycloak_external_https_port: 443
-    # Host address, used for JDBC ping. This is the IP used by the other hosts in the cluster to connect to this host.
-    host_addr: '{{ ansible_default_ipv4.address }}'
   tasks:
     - name: Install aptitude using apt
       apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
@@ -84,12 +78,12 @@
               deploy:
                 mode: global
                 labels:
+                  - 'traefik.enable=true'
                   - 'traefik.http.routers.keycloak.rule={{ keycloak_traefik_rule }}'
                   - 'traefik.http.services.keycloak-service.loadbalancer.sticky=true'
-                  - 'traefik.http.services.keycloak-service.loadbalancer.server.port={{ keycloak_external_http_port }}'
+                  - 'traefik.http.services.keycloak-service.loadbalancer.server.port=8080'
+                  - 'traefik.http.routers.keycloak.service=keycloak-service'
               ports:
-                - '{{ keycloak_external_http_port }}:8080'
-                - '{{ keycloak_external_https_port }}:8443'
                 - '7600:7600' # Used for inter-host communications for clustered mode
               environment:
                 KEYCLOAK_USER: '{{ default_keycloak_user }}'
