@@ -72,4 +72,4 @@ To perform backups of the PostgreSQL database, refer to the location defined in 
 postgres_data_directory: /etc/postgres-storage/{{ keycloak_container_name }}
 ```
 
-This is the data location used for the PostgreSQL database, and consequently could be used for backing up the database.
+This is the on-disk location used for the PostgreSQL database, and consequently could be used for backing up the database.
