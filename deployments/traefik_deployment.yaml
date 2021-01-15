@@ -7,6 +7,8 @@
     ansible_python_interpreter: /usr/bin/python3
     # Rule used for matching traefik's control panel
     traefik_external_rule: 'Host(`localhost`)'
+    # Name of the network to use for traefik's connection to containers
+    traefik_docker_network: 'traefik'
   tasks:
     - name: Install aptitude using apt
       apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
@@ -44,12 +46,13 @@
         - version: "3.2"
           networks:
             traefik:
-              external: true
+              external:
+                name: '{{ traefik_docker_network }}'
           services:
             traefik:
               image: traefik
               networks:
-                - traefik
+                - '{{ traefik_docker_network }}'
               command:
                 - "--api.insecure=true"
                 - "--entrypoints.http.address=:80"
