@@ -86,7 +86,7 @@
                 labels:
                   - 'traefik.http.routers.keycloak.rule={{ keycloak_traefik_rule }}'
                   - 'traefik.http.services.keycloak-service.loadbalancer.sticky=true'
-                  - 'traefik.http.services.keycloak-service.loadbalancer.server.port=8080'
+                  - 'traefik.http.services.keycloak-service.loadbalancer.server.port={{ keycloak_external_http_port }}'
               ports:
                 - '{{ keycloak_external_http_port }}:8080'
                 - '{{ keycloak_external_https_port }}:8443'
