@@ -6,6 +6,8 @@
     tgs_directory: '/etc/tgs'
     # Host address upon which this workbook is run (192.168.x.x)
     host_addr: '{{ ansible_default_ipv4.address }}'
+    # Should be null for this file to template properly
+    tgs_swarm_controller: null
   tasks:
     - name: Install aptitude using apt
       apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
