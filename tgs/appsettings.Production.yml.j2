@@ -10,12 +10,15 @@ Database:
     ConnectionString: "User ID={{ postgres_user }};Password={{ postgres_password }};Host={{ postgres_host }};Port={{ postgres_external_port }};Database={{ postgres_db }};"
 ControlPanel:
     Enable: true
+{% if tgs_allowed_origins %}
+    AllowedOrigins: {{ tgs_allowed_origins }}
+{% endif %}
 Swarm:
     PrivateKey: "{{ tgs_swarm_private_key }}"
 {% if tgs_swarm_controller %}
-    ControllerAddress: "{{ tgs_swarm_controller }}"
+    ControllerAddress: "http://{{ tgs_swarm_controller }}:{{ tgs_external_port }}/"
 {% endif %}
-    Address: "{{ host_addr }}"
+    Address: "http://{{ host_addr }}:{{ tgs_external_port }}/"
     Identifier: "{{ tgs_host_identifier }}"
 Security:
     OAuth:
