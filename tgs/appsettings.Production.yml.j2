@@ -1,0 +1,20 @@
+General:
+    GitHubAccessToken: "{{ github_access_token }}"
+Database:
+    DatabaseType: PostgresSql # bit of a bruh moment
+    ServerVersion: "{{ postgres_version }}"
+    ConnectionString: "User ID={{ postgres_user }};Password={{ postgres_password }};Host={{ postgres_host }};Port={{ postgres_external_port }};Database={{ postgres_db }};"
+ControlPanel:
+    Enable: true
+Swarm:
+    PrivateKey: "{{ tgs_swarm_private_key }}"
+    ControllerAddress: "{{ tgs_swarm_controller }}"
+    Address: "{{ host_addr }}"
+    Identifier: "{{ tgs_host_identifier }}"
+Security:
+    OAuth:
+        Keycloak:
+            ClientId: "{{ tgs_keycloak_client_id }}"
+            ClientSecret: "{{ tgs_keycloak_client_secret }}"
+            RedirectUrl: "{{ tgs_keycloak_redirect_url }}"
+            ServerUrl: "{{ tgs_keycloak_server_url }}"

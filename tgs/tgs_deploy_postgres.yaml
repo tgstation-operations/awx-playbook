@@ -1,0 +1,68 @@
+- name: TGS - Deploy Postgres
+  hosts: tgs_db_host
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+    # Name of the Postgres container, used for Docker container naming and the postgres storage path
+    postgres_container_name: tgs_postgres
+    # Image to run for the Postgres container
+    postgres_container_image: 'postgres:13.1'
+    # The external port to expose for Postgres
+    postgres_external_port: 5432
+    # The directory in which to mount the data directory from Postgres
+    postgres_data_directory: /etc/postgres-storage/{{ postgres_container_name }}
+    # Host address upon which this workbook is run (192.168.x.x)
+    host_addr: '{{ ansible_default_ipv4.address }}'
+  tasks:
+    - name: Install aptitude using apt
+      apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
+
+    - name: Install required system packages
+      apt: name={{ item }} state=latest update_cache=yes
+      loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'gnupg-agent', 'software-properties-common', 'python3-pip', 'virtualenv', 'python3-setuptools' ]
+
+    - name: Add Docker GPG apt Key
+      apt_key:
+        url: https://download.docker.com/linux/debian/gpg
+        state: present
+
+    - name: Add Docker Repository
+      apt_repository:
+        repo: deb https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable
+        state: present
+
+    - name: Update apt and install docker packages
+      apt: update_cache=yes name={{ item }} state=latest
+      loop: [ 'docker-ce' ]
+
+    - name: Install required python modules
+      pip:
+        name:
+        - docker
+        - jsondiff
+        - pyyaml
+
+    - name: Create Postgres database storage directory
+      file:
+        path: '{{ postgres_data_directory }}'
+        state: directory
+        mode: '0740'
+
+    - name: Ensure postgres container is running
+      docker_container:
+        name: '{{ postgres_container_name }}'
+        image: "{{ postgres_container_image }}"
+        state: present
+        restart: yes
+        ports: 
+          - "{{ postgres_external_port }}:5432"
+        volumes:
+          - '{{ postgres_data_directory }}:/var/lib/postgresql/data'
+        env:
+          POSTGRES_DB: '{{ postgres_db }}'
+          POSTGRES_USER: '{{ postgres_user }}'
+          POSTGRES_PASSWORD: '{{ postgres_password }}'
+
+    - name: Publish the required secrets to be consumed by a workflow
+      set_stats:
+        data:
+          postgres_host: '{{ host_addr }}'

@@ -1,0 +1,99 @@
+- name: TGS - Deploy TGS instances
+  hosts: tgs_swarm
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+    # Name of the TGS container, used for Docker container naming
+    tgs_container_name: tgs_instance
+    # TGS image to run
+    tgs_container_image: 'tgstation/server:v4.8.0'
+    # TGS directory in which the installation exists
+    tgs_dir: '/etc/tgs'
+    # Where TGS configuration files are stored
+    tgs_config_dir: '{{ tgs_dir }}/config'
+    # Where TGS instances are stored
+    tgs_instances_dir: '{{ tgs_dir }}/instances'
+    # Where TGS logs are stored
+    tgs_logs_dir: '{{ tgs_dir }}/logs'
+    # Host address upon which this workbook is run (192.168.x.x)
+    host_addr: '{{ ansible_default_ipv4.address }}'
+    # External port for TGS communication
+    tgs_external_port: 5000
+    # Game server port to expose
+    tgs_game_port: 1337
+  tasks:
+    - name: Install aptitude using apt
+      apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
+
+    - name: Install required system packages
+      apt: name={{ item }} state=latest update_cache=yes
+      loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'gnupg-agent', 'software-properties-common', 'python3-pip', 'virtualenv', 'python3-setuptools' ]
+
+    - name: Add Docker GPG apt Key
+      apt_key:
+        url: https://download.docker.com/linux/debian/gpg
+        state: present
+
+    - name: Add Docker Repository
+      apt_repository:
+        repo: deb https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable
+        state: present
+
+    - name: Update apt and install docker packages
+      apt: update_cache=yes name={{ item }} state=latest
+      loop: [ 'docker-ce' ]
+
+    - name: Install required python modules
+      pip:
+        name:
+        - docker
+        - jsondiff
+        - pyyaml
+
+    - name: Create TGS config file directory
+      file:
+        path: '{{ tgs_dir }}'
+        state: directory
+        mode: '0740'
+
+    - name: Generate TGS configuration for the controller
+      template:
+        src: 'tgs/appsettings.Production.yml.j2'
+        dest: '{{ tgs_directory }}/appsettings.Production.yml'
+        mode: '0640'
+      when: "'tgs_swarm_member' in group_names"
+
+    - name: Create TGS config file directory
+      file:
+        path: '{{ tgs_config_dir }}'
+        state: directory
+        mode: '0740'
+
+    - name: Create TGS instances directory
+      file:
+        path: '{{ tgs_instances_dir }}'
+        state: directory
+        mode: '0740'
+
+    - name: Create TGS logs directory
+      file:
+        path: '{{ tgs_logs_dir }}'
+        state: directory
+        mode: '0740'
+
+    - name: Ensure TGS container is running
+      docker_container:
+        name: '{{ tgs_container_name }}'
+        image: '{{ tgs_container_image }}'
+        state: present
+        restart: yes
+        ports: 
+          - '{{ tgs_external_port }}:5000'
+          - '0.0.0.0:{{ tgs_game_port }}:{{ tgs_game_port }}'
+        volumes:
+          - '{{ tgs_dir }}/appsettings.Production.yml:appsettings.Production.yml'
+          - '{{ tgs_config_dir }}:/config_data'
+          - '{{ tgs_instances_dir }}:/tgs4_instances'
+          - '{{ tgs_logs_dir }}:/tgs_logs'
+        capabilities:
+          - 'sys_nice'
+        init: yes
