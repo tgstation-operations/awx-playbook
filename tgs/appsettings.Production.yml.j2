@@ -3,7 +3,7 @@ General:
     SetupWizardMode: Never
 {% if tgs_config_version %}
     ConfigVersion: "{{ tgs_config_version }}"
-{% end %}
+{% endif %}
 Database:
     DatabaseType: PostgresSql # bit of a bruh moment
     ServerVersion: "{{ postgres_version }}"
