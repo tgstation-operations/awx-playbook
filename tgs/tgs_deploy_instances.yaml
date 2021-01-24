@@ -90,7 +90,7 @@
           - '{{ tgs_external_port }}:5000'
           - '0.0.0.0:{{ tgs_game_port }}:{{ tgs_game_port }}'
         volumes:
-          - '{{ tgs_dir }}/appsettings.Production.yml:/app/appsettings.Production.yml'
+          - '{{ tgs_dir }}/appsettings.Production.yml:/config_data/appsettings.Production.yml'
           - '{{ tgs_config_dir }}:/config_data'
           - '{{ tgs_instances_dir }}:/tgs4_instances'
           - '{{ tgs_logs_dir }}:/tgs_logs'

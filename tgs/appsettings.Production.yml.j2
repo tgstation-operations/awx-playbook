@@ -1,5 +1,6 @@
 General:
     GitHubAccessToken: "{{ github_access_token }}"
+    SetupWizardMode: Never
 Database:
     DatabaseType: PostgresSql # bit of a bruh moment
     ServerVersion: "{{ postgres_version }}"
@@ -8,7 +9,9 @@ ControlPanel:
     Enable: true
 Swarm:
     PrivateKey: "{{ tgs_swarm_private_key }}"
+    {% if tgs_swarm_controller %}
     ControllerAddress: "{{ tgs_swarm_controller }}"
+    {% endif %}
     Address: "{{ host_addr }}"
     Identifier: "{{ tgs_host_identifier }}"
 Security:
