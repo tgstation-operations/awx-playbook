@@ -51,7 +51,7 @@
       docker_container:
         name: '{{ postgres_container_name }}'
         image: "{{ postgres_container_image }}"
-        state: present
+        state: started
         restart: yes
         ports: 
           - "{{ postgres_external_port }}:5432"

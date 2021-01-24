@@ -84,7 +84,7 @@
       docker_container:
         name: '{{ tgs_container_name }}'
         image: '{{ tgs_container_image }}'
-        state: present
+        state: started
         restart: yes
         ports: 
           - '{{ tgs_external_port }}:5000'
