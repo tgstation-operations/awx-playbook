@@ -3,7 +3,7 @@
   vars:
     ansible_python_interpreter: /usr/bin/python3
     # TGS directory in which the core config file will exist
-    tgs_directory: '/etc/tgs'
+    tgs_dir: '/etc/tgs'
     # Host address upon which this workbook is run (192.168.x.x)
     host_addr: '{{ ansible_default_ipv4.address }}'
     # Should be null for this file to template properly
@@ -18,14 +18,14 @@
 
     - name: Ensure TGS directory exists
       file:
-        path: '{{ tgs_directory }}'
+        path: '{{ tgs_dir }}'
         state: directory
         mode: '0740'
 
     - name: Generate TGS configuration for the controller
       template:
         src: 'appsettings.Production.yml.j2'
-        dest: '{{ tgs_directory }}/appsettings.Production.yml'
+        dest: '{{ tgs_dir }}/appsettings.Production.yml'
         mode: '0640'
 
     - name: Publish the required secrets to be consumed by a workflow
