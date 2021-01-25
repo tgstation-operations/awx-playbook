@@ -55,12 +55,12 @@
         state: directory
         mode: '0740'
 
-    - name: Generate TGS configuration for the controller
+    - name: Generate TGS configuration for all non-controller instances
       template:
         src: 'appsettings.Production.yml.j2'
         dest: '{{ tgs_dir }}/appsettings.Production.yml'
         mode: '0640'
-      when: "'tgs_swarm_member' in group_names"
+      when: "'tgs_swarm_controller' not in group_names"
 
     - name: Create TGS config file directory
       file:

@@ -4,6 +4,14 @@
 
 This project can be used to deploy a distributed Keycloak installation, which will have multiple Keycloak servers spread across different hosts backed with a PostgreSQL database.
 
+## Necessary Host Groups
+
+The deployment of these playbooks requires a set of hosts with the following groups...
+
+``docker_swarm_manager``: Assign to a single host, this will be the manager of the swarm
+
+``docker_swarm_worker``: Assign to each non-manager host which will host a Keycloak instance, these will be workers added to the docker swarm.
+
 ## Included Playbooks
 
 Note that the file descriptions below occur in the order they were intended to be run within a workflow.
