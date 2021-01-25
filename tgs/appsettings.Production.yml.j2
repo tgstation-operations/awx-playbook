@@ -1,8 +1,10 @@
 General:
     GitHubAccessToken: "{{ github_access_token }}"
     SetupWizardMode: Never
+{% if tgs_log_level %}
 FileLogging:
-    Level: Trace
+    LogLevel: {{ tgs_log_level }}
+{% endif %}
 {% if tgs_config_version %}
     ConfigVersion: "{{ tgs_config_version }}"
 {% endif %}
