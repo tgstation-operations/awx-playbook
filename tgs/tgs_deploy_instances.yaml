@@ -95,7 +95,7 @@
         image: '{{ tgs_container_image }}'
         state: started
         restart: yes
-        ports: '{{ [ tgs_external_port + ":5000" ] + _tgs_game_ports_processed }}'
+        ports: '{{ [ tgs_external_port ~ ":5000" ] + _tgs_game_ports_processed }}'
         volumes:
           - '{{ tgs_dir }}/appsettings.Production.yml:/config_data/appsettings.Production.yml'
           - '{{ tgs_config_dir }}:/config_data'
