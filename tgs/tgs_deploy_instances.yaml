@@ -19,7 +19,11 @@
     # External port for TGS communication
     tgs_external_port: 5000
     # Game server port to expose
-    tgs_game_port: 1337
+    tgs_game_ports: [ 1337 ]
+    # Don't modify this unless you know what you're doing, used for
+    # constructing the list of ports for docker to publish for each
+    # of the game servers
+    _tgs_game_ports_processed: []
   tasks:
     - name: Install aptitude using apt
       apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
@@ -48,6 +52,11 @@
         - docker
         - jsondiff
         - pyyaml
+
+    - name: Construct list of ports for game servers on this server
+      set_fact:
+        _tgs_game_ports_processed: '{{ _tgs_game_ports_processed }} + [ "0.0.0.0:{{ item }}:{{ item }}" ]'
+      loop: "{{ tgs_game_ports }}"
 
     - name: Create TGS config file directory
       file:
@@ -86,9 +95,7 @@
         image: '{{ tgs_container_image }}'
         state: started
         restart: yes
-        ports: 
-          - '{{ tgs_external_port }}:5000'
-          - '0.0.0.0:{{ tgs_game_port }}:{{ tgs_game_port }}'
+        ports: '{{ [ "{{ tgs_external_port }}:5000" ] + _tgs_game_ports_processed }}'
         volumes:
           - '{{ tgs_dir }}/appsettings.Production.yml:/config_data/appsettings.Production.yml'
           - '{{ tgs_config_dir }}:/config_data'

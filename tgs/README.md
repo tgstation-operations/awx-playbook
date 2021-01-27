@@ -43,6 +43,12 @@ tgs_host_identifier: 'example_identifier' # The unique identifier used to distin
 # The web panel URL used by Keycloak to redirect users logging in back to the web panel
 # Ideally this should be moved to a more automated URL, but this is sufficient for now
 tgs_keycloak_redirect_url: 'http://example_identifier.example.com:5000/'
+# A list of the ports to publish for game servers to use, this should match the 
+# ports you intend on using for each instance within this TGS server.
+# Only necessary if running more than one instance per server, or if the port
+# you intend to publish differs between hosts. If the port is the same for all hosts,
+# this can be set in the workflow exclusively and doesn't necessitate setting this var on each host.
+tgs_game_ports: [ 1337 ]
 ```
 
 The following variables should be configured on the workflow itself, or within their respective playbooks. This is not an exhaustive list, but rather what is required to run the deployment properly. There may be further variables which can be configured and tweaked, found within the playbooks themselves.
@@ -60,6 +66,7 @@ postgres_version: '13.1' # String used by TGS for controlling featureset use on 
 tgs_swarm_private_key: null # Unique private string used to cluster the TGS instances in the swarm. This is like a password, protect it.
 tgs_config_version: '2.3.0' # This only surpresses warnings about config versions, currently not found anywhere public. Cyberboss intends to change that.
 tgs_log_level: 'Trace' # Log level used for debugging, can be excluded if not needed.
+tgs_game_ports: [ 1337 ] # A list of ports to publish on *all* TGS servers deployed, see the per-host configuration if this doesn't suit your needs.
 
 # Keycloak configuration
 # Note that the redirect URLs are configured per-host currently
