@@ -1,0 +1,5 @@
+---
+ansible_python_interpreter: /usr/bin/python3
+# The docker network driver, defaults to 'bridge' but can also be 'overlay' out of the box
+docker_network_driver: 'bridge'
+docker_network_name: 'traefik'

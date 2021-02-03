@@ -1,0 +1,38 @@
+---
+- name: Install required system packages
+  apt:
+    state: latest 
+    cache_valid_time: 60 
+    update_cache: true
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg-agent
+      - software-properties-common
+      - python3-pip
+      - virtualenv
+      - python3-setuptools
+
+- name: Add Docker GPG apt Key
+  apt_key:
+    url: https://download.docker.com/linux/debian/gpg
+    state: present
+
+- name: Add Docker Repository
+  apt_repository:
+    repo: deb https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable
+    state: present
+
+- name: Update apt and install docker-ce
+  apt: 
+    update_cache: true
+    state: latest
+    name: docker-ce
+
+- name: Install required python modules
+  pip:
+    name:
+    - docker
+    - jsondiff
+    - pyyaml

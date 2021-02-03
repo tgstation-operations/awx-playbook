@@ -1,0 +1,5 @@
+- name: Ensure the designated overlay network is created
+  docker_network:
+    name: '{{ docker_network_name }}'
+    driver: '{{ docker_network_driver }}'
+    state: present

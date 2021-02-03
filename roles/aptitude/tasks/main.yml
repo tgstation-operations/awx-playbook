@@ -1,0 +1,7 @@
+- name: Install aptitude using apt-get
+  apt:
+    name: aptitude
+    state: latest
+    cache_valid_time: 60
+    update_cache: true 
+    force_apt_get: true

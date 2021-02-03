@@ -1,0 +1,9 @@
+- hosts: docker_swarm_manager
+  roles:
+    - docker_swarm_create
+    - docker_swarm_network
+
+- hosts: docker_swarm_worker
+  roles:
+    - docker_swarm_join
+    
