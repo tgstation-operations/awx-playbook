@@ -1,0 +1,11 @@
+- name: Get join key from first manager
+  docker_swarm_info:
+  delegate_to: "{{ groups['docker_swarm_managers'][0] }}"
+  register: result
+  
+- name: Join workers
+  docker_swarm:
+    state: join
+    advertise_addr: "{{ ansible_default_ipv4.address }}"
+    join_token: "{{ result.swarm_facts.JoinTokens.Worker }}"
+    remote_addrs: [ "{{ groups['docker_swarm_managers'][0] }}" ]

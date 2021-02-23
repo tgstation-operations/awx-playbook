@@ -3,100 +3,60 @@
 
 - name: Keycloak clustered deployment
   hosts: docker_swarm_manager
-  vars:
-    ansible_python_interpreter: /usr/bin/python3
-    # Name of the keycloak container, used for Docker container naming and the postgres storage path
-    keycloak_container_name: keycloak
-    # The external port to expose for Postgres
-    postgres_external_port: 5432
-    # The directory in which to mount the data directory from Postgres
-    postgres_data_directory: /etc/postgres-storage/{{ keycloak_container_name }}
-    # The URL that is used for the base of all routes for Keycloak
-    keycloak_frontend_url: "http://localhost:8080/auth"
-    # Name of the network to use for traefik's connection to containers
-    traefik_docker_network: 'traefik'
-  tasks:
-    - name: Install aptitude using apt
-      apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
 
-    - name: Install required system packages
-      apt: name={{ item }} state=latest update_cache=yes
-      loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'gnupg-agent', 'software-properties-common', 'python3-pip', 'virtualenv', 'python3-setuptools' ]
+- name: Create Postgres database storage directory
+  file:
+    path: '{{ postgres_data_directory }}'
+    state: directory
+    mode: '0740'
 
-    - name: Add Docker GPG apt Key
-      apt_key:
-        url: https://download.docker.com/linux/debian/gpg
-        state: present
-
-    - name: Add Docker Repository
-      apt_repository:
-        repo: deb https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable
-        state: present
-
-    - name: Update apt and install docker packages
-      apt: update_cache=yes name={{ item }} state=latest
-      loop: [ 'docker-ce' ]
-
-    - name: Install required python modules
-      pip:
-        name:
-        - docker
-        - jsondiff
-        - pyyaml
-
-    - name: Create Postgres database storage directory
-      file:
-        path: '{{ postgres_data_directory }}'
-        state: directory
-        mode: '0740'
-
-    - name: Create keycloak container stack
-      docker_stack:
-        name: '{{ keycloak_container_name }}'
-        state: present
-        compose:
-        - version: "3"
+- name: Create keycloak container stack
+  docker_stack:
+    name: '{{ keycloak_container_name }}'
+    state: present
+    compose:
+    - version: "3"
+      networks:
+        traefik:
+          external:
+            name: '{{ traefik_docker_network }}'
+      services:
+        postgres:
+          image: "{{ postgres_container_image }}"
+          deploy:
+            placement:
+              constraints: [ node.role == manager ]
+          volumes:
+            - '{{ postgres_data_directory }}:/var/lib/postgresql/data'
+          ports:
+            - '{{ postgres_external_port }}:5432'
+          environment:
+            POSTGRES_DB: '{{ postgres_db }}'
+            POSTGRES_USER: '{{ postgres_user }}'
+            POSTGRES_PASSWORD: '{{ postgres_password }}'
+        keycloak:
+          image: '{{ keycloak_container_image }}' # See https://github.com/ivangfr/keycloak-clustered
           networks:
-            traefik:
-              external:
-                name: '{{ traefik_docker_network }}'
-          services:
-            postgres:
-              image: "{{ postgres_container_image }}"
-              deploy:
-                placement:
-                  constraints: [ node.role == manager ]
-              volumes:
-                - '{{ postgres_data_directory }}:/var/lib/postgresql/data'
-              ports:
-                - '{{ postgres_external_port }}:5432'
-              environment:
-                POSTGRES_DB: '{{ postgres_db }}'
-                POSTGRES_USER: '{{ postgres_user }}'
-                POSTGRES_PASSWORD: '{{ postgres_password }}'
-            keycloak:
-              image: '{{ keycloak_container_image }}' # See https://github.com/ivangfr/keycloak-clustered
-              networks:
-                - '{{ traefik_docker_network }}'
-              deploy:
-                mode: global
-                labels:
-                  - 'traefik.enable=true'
-                  - 'traefik.http.routers.keycloak.rule={{ keycloak_traefik_rule }}'
-                  - 'traefik.http.services.keycloak-service.loadbalancer.sticky=true'
-                  - 'traefik.http.services.keycloak-service.loadbalancer.server.port=8080'
-                  - 'traefik.http.routers.keycloak.service=keycloak-service'
-                  - 'traefik.docker.network={{ traefik_docker_network }}'
-              ports:
-                - '7600:7600' # Used for inter-host communications for clustered mode
-              environment:
-                KEYCLOAK_USER: '{{ default_keycloak_user }}'
-                KEYCLOAK_PASSWORD: '{{ default_keycloak_password }}'
-                KEYCLOAK_FRONTEND_URL: '{{ keycloak_frontend_url }}'
-                DB_VENDOR: postgres
-                DB_ADDR: '{{ postgres_address }}'
-                DB_DATABASE: '{{ postgres_db }}'
-                DB_USER: '{{ postgres_user }}'
-                DB_PASSWORD: '{{ postgres_password }}'
-                JGROUPS_DISCOVERY_PROTOCOL: JDBC_PING
-                JGROUPS_DISCOVERY_PROPERTIES=datasource_jndi_name: java:jboss/datasources/KeycloakDS
+            - '{{ traefik_docker_network }}'
+          deploy:
+            mode: global
+            labels:
+              - 'traefik.enable=true'
+              - 'traefik.http.routers.keycloak.rule={{ keycloak_traefik_rule }}'
+              - 'traefik.http.services.keycloak-service.loadbalancer.sticky=true'
+              - 'traefik.http.services.keycloak-service.loadbalancer.server.port=8080'
+              - 'traefik.http.routers.keycloak.service=keycloak-service'
+              - 'traefik.docker.network={{ traefik_docker_network }}'
+          ports:
+            - '7600:7600' # Used for inter-host communications for clustered mode
+          environment:
+            KEYCLOAK_USER: '{{ default_keycloak_user }}'
+            KEYCLOAK_PASSWORD: '{{ default_keycloak_password }}'
+            KEYCLOAK_FRONTEND_URL: '{{ keycloak_frontend_url }}'
+            DB_VENDOR: postgres
+            DB_ADDR: '{{ postgres_address }}'
+            DB_DATABASE: '{{ postgres_db }}'
+            DB_USER: '{{ postgres_user }}'
+            DB_PASSWORD: '{{ postgres_password }}'
+            JGROUPS_DISCOVERY_PROTOCOL: JDBC_PING
+            JGROUPS_DISCOVERY_PROPERTIES=datasource_jndi_name: java:jboss/datasources/KeycloakDS
