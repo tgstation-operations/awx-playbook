@@ -1,0 +1,7 @@
+- name: imbude network bindpoint tasks
+  include_tasks: "imbude-bindpoint.yml"
+  loop: "{{imbude_bindpoints_service.bindpoints | default({}) | dict2items(key_name='volume_name', value_name='bindpoint')}}"
+  loop_control:
+    loop_var: imbude_bindpoints_volume
+    label: "{{imbude_bindpoints_volume.volume_name}}"
+      

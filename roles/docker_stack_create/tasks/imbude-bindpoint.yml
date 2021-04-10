@@ -1,0 +1,29 @@
+- name: Set vars and imbude bindpoint
+  vars:
+    zfs_scope: "{{imbude_bindpoints_volume.bindpoint.scope | default(service_imbude_defaults.network_bindpoints.defaults.scope)}}"
+    zfs_target_service_prefix: "{{imbude_bindpoints_service.service_name if zfs_scope != 'stack' else 'stack_global'}}"
+    zfs_target_prefix: "{{stack_name~'/'~zfs_target_service_prefix if zfs_scope != 'global' else 'global'}}"
+    zfs_target_suffix: "{{imbude_bindpoints_volume.bindpoint.dest | default(imbude_bindpoints_volume.volume_name)}}"
+  block:
+  - name: Create zfs dataset for service
+    zfs:
+      name: "dockerstore/{{nfs_namespace}}/{{zfs_target_prefix}}/{{zfs_target_suffix}}"
+      state: present
+      extra_zfs_properties:
+        sharenfs: on
+      
+    delegate_to: "{{groups['nas'][0]}}"
+    delegate_facts: true
+  #this is here rather then in the compose file so we can support changing volume settings after the fact.
+  - name: Create docker nfs mount named volume on all nodes
+    docker_volume:
+      recreate: options-changed
+      #even if two services use the same bindpoint, we give each their own "named volume" for easier management
+      name: "NFS-{{stack_name}}-{{imbude_bindpoints_service.service_name}}-{{imbude_bindpoints_volume.volume_name}}"
+      driver_options:
+        type: "nfs"
+        o: "addr={{groups['nas'][0]}},nolock,soft,rw"
+        device: ":/dockerstore/{{nfs_namespace}}/{{zfs_target_prefix}}/{{zfs_target_suffix}}"
+    delegate_to: "{{item}}"
+    delegate_facts: true
+    loop: "{{groups['docker_swarm_nodes']}}"

@@ -1,12 +1,3 @@
-- hosts: all
-  vars:
-    ansible_python_interpreter: /usr/bin/python3
-
-#minor speedup: install docker on all nodes first.
-- hosts: docker_swarm_nodes
-  roles:
-    - docker
-
 - hosts: docker_swarm_managers
   roles:
     - docker_swarm_create
@@ -14,4 +5,9 @@
 - hosts: docker_swarm_workers
   roles:
     - docker_swarm_join_workers
+    
+- hosts: docker_swarm_managers
+  roles:
+    - traefik_deployment
+      
 

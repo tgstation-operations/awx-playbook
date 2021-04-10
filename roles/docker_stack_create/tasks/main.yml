@@ -1,0 +1,52 @@
+#Run imbude tasks
+- name: imbude network bindpoints tasks
+  include_tasks: "imbude-bindpoints.yml"
+  loop: "{{service_imbude.network_bindpoints | default({}) | dict2items(key_name='service_name', value_name='bindpoints')}}"
+  loop_control:
+    loop_var: imbude_bindpoints_service
+    label: "{{imbude_bindpoints_service.service_name}}"
+    
+#- name: imbude traefik tasks
+#  include_task: "imbude-traefik.yml"
+#  loop: "{{service_imbude.traefik | default({}) | dict2items(key_name='service_name', value_name='traefik')}}"
+#  loop_control:
+#    label: "{{item.name}}"
+
+- name: Create compose storage folder
+  file:
+    path: "{{compose_storage_folder}}/{{stack_name}}"
+    state: directory
+
+#Run imbude templating
+- name: imbude network bindpoints template
+  template:
+    src: "bindpoint-compose.yml.j2"
+    dest: "{{compose_storage_folder}}/{{stack_name}}/bindpoint-compose.yml"
+    lstrip_blocks: true
+  when: service_imbude.network_bindpoints is defined
+
+- name: imbude traefik bindpoints template
+  template:
+    src: "traefik-compose.yml.j2"
+    dest: "{{compose_storage_folder}}/{{stack_name}}/traefik-compose.yml"
+    lstrip_blocks: true
+  when: service_imbude.traefik is defined
+
+
+#Bring it all togeather
+- name: install docker stack
+  docker_stack:
+    name: "{{stack_name}}"
+    state: present
+    compose:
+    - "{{compose}}"
+    - "{{service_imbude.network_bindpoints is defined | ternary(compose_storage_folder~'/'~stack_name~'/'~'bindpoint-compose.yml', {})}}"
+    - "{{service_imbude.traefik is defined | ternary(compose_storage_folder~'/'+stack_name~'/'~'traefik-compose.yml', {})}}"
+      
+    
+    
+    
+    
+    
+    
+    

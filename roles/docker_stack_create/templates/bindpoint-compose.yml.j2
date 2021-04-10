@@ -1,0 +1,17 @@
+version: "3.2"
+volumes:
+  {% for service_name, bindpoints in service_imbude.network_bindpoints.items() %}
+  {% for volume_name, bindpoint in bindpoints.items() %}
+  {{service_name}}-{{volume_name}}:
+    external:
+      name: NFS-{{stack_name}}-{{service_name}}-{{volume_name}}
+  {% endfor %}
+  {% endfor %}
+services:
+  {% for service_name, bindpoints in service_imbude.network_bindpoints.items() %}
+  {{service_name}}:
+    volumes:
+    {% for volume_name, bindpoint in bindpoints.items() %}
+    - "{{service_name}}-{{volume_name}}:{{bindpoint.src}}"
+    {% endfor %}
+  {% endfor %}

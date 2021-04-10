@@ -1,0 +1,44 @@
+#stack_name: "You must provide this"
+service_imbude: []
+service_imbude_defaults:
+  #"service_name": []
+  network_bindpoints:
+    #"service_name":
+      #"bindpoint-volume-name":
+        #src: "/abolute/docker/container/path"
+        #dest: "relative/nfs/path"
+        #scope: service
+        #...
+    
+    defaults:
+      #dest: "bindpoint-volume-name"
+      backup: FALSE
+      replication: FALSE
+      #scope: "global|stack|service"
+      scope: service
+      permissions:
+        #read|write|none/null
+        workers: write
+        managers: write
+        local_lan: none
+        global_lan: none
+      extra_zfs_properties: []
+          
+  traefik:
+    #"docker_service_name:"
+      #"traefik_route_name":
+        #enabled: TRUE
+        #route_rule: ""
+        
+    defaults:  
+      enabled: FALSE
+      service_port: 80
+      #service_override: ""
+      #route_rule: "Host(`localhost`) && PathPrefix(`/traefik_route_name`)"
+      compress: TRUE
+      auth: FALSE
+      https: TRUE
+      redirect_http: TRUE
+
+#compose: "file or dict"
+compose_storage_folder: "~/ansible-run/compose-store"

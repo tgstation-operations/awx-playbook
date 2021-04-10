@@ -1,2 +1,4 @@
----
-# defaults file for roles/test
+# Rule used for matching traefik's control panel
+traefik_external_rule: 'Host(`localhost`)'
+# Name of the network to use for traefik's connection to containers
+traefik_docker_network: 'traefik'

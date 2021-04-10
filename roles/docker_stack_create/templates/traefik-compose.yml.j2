@@ -1,0 +1,22 @@
+version: "3.2"
+networks:
+  traefik:
+    external:
+      name: 'traefik'
+services:
+  {% for service_name, routes in service_imbude.traefik.items() %}
+  {{service_name}}:
+    networks:
+    - 'traefik'
+    deploy:
+      labels:
+        {% for route_name, route in routes.items() %}
+        - 'traefik.http.routers.{{route_name}}-ext.rule={{route.route_rule}}'
+        {% if route.service_override %}
+        - 'traefik.http.routers.{{route_name}}-ext.service={{route.service_override}}'
+        {% else %}
+        - 'traefik.http.routers.{{route_name}}-ext.service={{route_name}}-ext-srv'
+        - 'traefik.http.services.{{route_name}}-ext-srv.loadbalancer.server.port={{route.service_port | default(service_imbude_defaults.traefik.defaults.service_port)}}'
+        {% endif %}
+        {% endfor %}
+  {% endfor %}
