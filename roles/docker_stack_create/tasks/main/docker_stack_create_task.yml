@@ -5,12 +5,6 @@
   loop_control:
     loop_var: imbude_bindpoints_service
     label: "{{imbude_bindpoints_service.service_name}}"
-    
-#- name: imbude traefik tasks
-#  include_task: "imbude-traefik.yml"
-#  loop: "{{service_imbude.traefik | default({}) | dict2items(key_name='service_name', value_name='traefik')}}"
-#  loop_control:
-#    label: "{{item.name}}"
 
 - name: Create compose storage folder
   file:

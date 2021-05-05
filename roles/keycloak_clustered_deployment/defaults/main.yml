@@ -7,5 +7,3 @@ postgres_external_port: 5432
 postgres_data_directory: /etc/postgres-storage/{{ keycloak_container_name }}
 # The URL that is used for the base of all routes for Keycloak
 keycloak_frontend_url: "http://localhost:8080/auth"
-# Name of the network to use for traefik's connection to containers
-traefik_docker_network: 'traefik'
