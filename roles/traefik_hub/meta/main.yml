@@ -55,3 +55,8 @@ dependencies:
                 failure_action: rollback
               restart_policy:
                 condition: any
+        secrets:
+          cf-dns-token-v{{cf_dns_secret_version}}:
+            external: True
+          cf-zone-token-v{{cf_dns_secret_version}}:
+            external: True
