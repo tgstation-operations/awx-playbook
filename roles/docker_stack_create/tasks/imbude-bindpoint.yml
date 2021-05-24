@@ -10,7 +10,7 @@
       name: "dockerstore/{{nfs_namespace}}/{{zfs_target_prefix}}/{{zfs_target_suffix}}"
       state: present
       extra_zfs_properties:
-        sharenfs: on
+        sharenfs: "rw=*"
       
     delegate_to: "{{groups['nas'][0]}}"
     delegate_facts: true
