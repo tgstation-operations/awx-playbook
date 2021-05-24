@@ -16,12 +16,12 @@
         state: directory
 #    - name: template main config
 #      template:
-#        src: "traefikhub-main-config.yml.j2"
+#        src: "traefikhub/traefikhub-main-config.yml.j2"
 #        dest: "/etc/ansible-managed/docker_volumes/traefik-hub/conf.d/01-main.yml"
 #        lstrip_blocks: true
     - name: template sandbox config
       template:
-        src: "traefikhub-sandbox-config.yml.j2"
+        src: "traefikhub/traefikhub-sandbox-config.yml.j2"
         dest: "/etc/ansible-managed/docker_volumes/traefik-hub/conf.d/21-sandbox.yml"
         lstrip_blocks: true
 
