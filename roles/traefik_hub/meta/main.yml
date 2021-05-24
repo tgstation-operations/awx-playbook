@@ -16,6 +16,7 @@ dependencies:
             image: traefik
             command:
               - "--api.insecure=true"
+              - "--api.dashboard=true"
               - "--entrypoints.http.address=:80"
               - "--entrypoints.https.address=:443"
               - "--entrypoints.https.http.tls.certResolver=letsencrypt-dns"
