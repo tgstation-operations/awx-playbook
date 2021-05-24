@@ -1,4 +1,5 @@
+traefik_stack_name: 'traefik'
 # Rule used for matching traefik's control panel
-traefik_external_rule: 'Host(`localhost`)'
+traefik_external_rule: "Host(`{{traefik_stack_name}}.{{core_domain_name}}`)"
 # Name of the network to use for traefik's connection to containers
-traefik_docker_network: 'traefik'
+traefik_docker_network: "{{traefik_stack_name}}"

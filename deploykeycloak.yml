@@ -1,4 +1,9 @@
+- hosts: docker_swarm_nodes
+  roles:
+    - docker
+
 - hosts: docker_swarm_managers
+  run_once: True
   roles:
     - docker_swarm_create
     
@@ -7,6 +12,7 @@
     - docker_swarm_join_workers
     
 - hosts: docker_swarm_managers
+  run_once: True
   roles:
     - traefik_deployment
       

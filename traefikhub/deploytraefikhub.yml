@@ -1,0 +1,35 @@
+- hosts: docker_swarm_nodes
+  roles:
+    - docker
+
+- hosts: docker_swarm_managers
+  run_once: True
+  roles:
+    - docker_swarm_create
+
+- name: Traefik-hub Config Deployment
+  hosts: docker_swarm_workers
+  tasks:
+    - name: Create config folder
+      file:
+        path: "/etc/ansible-managed/docker_volumes/traefik-hub/conf.d/"
+        state: directory
+#    - name: template main config
+#      template:
+#        src: "traefikhub-main-config.yml.j2"
+#        dest: "/etc/ansible-managed/docker_volumes/traefik-hub/conf.d/01-main.yml"
+#        lstrip_blocks: true
+    - name: template sandbox config
+      template:
+        src: "traefikhub-sandbox-config.yml.j2"
+        dest: "/etc/ansible-managed/docker_volumes/traefik-hub/conf.d/21-sandbox.yml"
+        lstrip_blocks: true
+
+- hosts: docker_swarm_workers
+  roles:
+    - docker_swarm_join_workers
+    
+- name: Traefik-hub Service Deployment
+  hosts: docker_swarm_managers
+  roles:
+    - traefik_hub

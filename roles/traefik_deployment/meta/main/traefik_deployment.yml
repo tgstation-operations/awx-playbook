@@ -2,13 +2,13 @@ dependencies:
   - docker
   - role: docker_swarm_network
     vars:
-      docker_network_name: "traefik"
+      docker_network_name: "{{traefik_docker_network}}"
       docker_network_driver: "overlay"
   - role: docker_stack_create
     vars:
-      stack_name: "traefik"
+      stack_name: "{{traefik_stack_name}}"
       service_imbude:
-        network_bindpoints: 
+        network_bindpoints:
           "traefik":
             "acme-store":
               src: "/etc/traefik/acme/"
@@ -19,7 +19,7 @@ dependencies:
           "traefik":
             "traefik-dash":
               enabled: TRUE
-              route_rule: "Host(`traefik.{{core_domain_name}}`)"
+              route_rule: "{{traefik_external_rule}}"
               service_override: "api@internal"
               
       compose:
@@ -42,8 +42,6 @@ dependencies:
                 published: 80
               - target: 443
                 published: 443
-              - target: 8080
-                published: 8080
             deploy:
               mode: global
               placement:
