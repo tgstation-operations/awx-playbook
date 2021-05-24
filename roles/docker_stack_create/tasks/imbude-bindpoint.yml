@@ -14,6 +14,14 @@
       
     delegate_to: "{{groups['nas'][0]}}"
     delegate_facts: true
+  - name: Set zfs dataset permissions
+    file:
+      path: "/dockerstore/{{nfs_namespace}}/{{zfs_target_prefix}}/{{zfs_target_suffix}}"
+      state: "directory"
+      #todo: make not shit.
+      mode: "777"
+    delegate_to: "{{groups['nas'][0]}}"
+    delegate_facts: true
   #this is here rather then in the compose file so we can support changing volume settings after the fact.
   - name: Create docker nfs mount named volume on all nodes
     docker_volume:

@@ -2,22 +2,22 @@ http:
   # Add the sandbox routers
   routers:
     {% for i in range(1, 55) %}
-  sandbox-router-https-{{i}}:
+    sandbox-router-https-{{i}}:
       entryPoints:
-    - https
+        - https
       service: sandbox-service-{{i}}
       rule: Host(`{{i}}.sandbox.{{core_domain_name}}`)
-  sandbox-router-http-{{i}}:
+    sandbox-router-http-{{i}}:
       entryPoints:
-    - http
+        - http
       service: sandbox-service-{{i}}
       rule: Host(`{{i}}.sandbox.{{core_domain_name}}`)
-  {% endfor %}
+    {% endfor %}
   # Add the sandbox services
   services:
   {% for i in range(1, 55) %}
     sandbox-service-{{i}}:
       loadBalancer:
         servers:
-        - url: http://{{sandbox_subnet_prefix}}.2{{'%02d' % i}}
+          - url: http://{{sandbox_subnet_prefix}}.2{{'%02d' % i}}
   {% endfor %}
