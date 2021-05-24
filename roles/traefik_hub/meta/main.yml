@@ -33,10 +33,8 @@ dependencies:
               CF_DNS_API_TOKEN_FILE: "/run/secrets/cf-dns-token"
               CF_ZONE_API_TOKEN_FILE: "/run/secrets/cf-zone-token"
             secrets:
-              - source: "cf-dns-token-v{{cf_dns_secret_version}}"
-                target: "cf-dns-token"
-              - source: "cf-zone-token-v{{cf_zone_secret_version}}"
-                target: "cf-zone-token"
+              - cf-dns-token
+              - cf-zone-token
             volumes:
               - /etc/ansible-managed/docker_volumes/traefik-hub/conf.d/:/etc/traefik/conf.d/
             ports:
@@ -56,7 +54,9 @@ dependencies:
               restart_policy:
                 condition: any
         secrets:
-          cf-dns-token-v{{cf_dns_secret_version}}:
-            external: True
-          cf-zone-token-v{{cf_dns_secret_version}}:
-            external: True
+          cf-dns-token:
+            external:
+              name: "cf-dns-token-v{{cf_dns_secret_version}}"
+          cf-zone-token:
+            external:
+              name: "cf-zone-token-v{{cf_zone_secret_version}}"
