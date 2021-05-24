@@ -51,4 +51,4 @@ dependencies:
                 parallelism: 1
                 delay: 10s
               restart_policy:
-                condition: on-failure
+                condition: always

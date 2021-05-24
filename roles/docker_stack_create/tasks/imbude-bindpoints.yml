@@ -4,4 +4,3 @@
   loop_control:
     loop_var: imbude_bindpoints_volume
     label: "{{imbude_bindpoints_volume.volume_name}}"
-      

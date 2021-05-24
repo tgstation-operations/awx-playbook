@@ -31,5 +31,6 @@
     
 - name: Traefik-hub Service Deployment
   hosts: docker_swarm_managers
+  run_once: True
   roles:
     - traefik_hub
