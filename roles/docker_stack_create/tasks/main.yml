@@ -33,6 +33,6 @@
     name: "{{stack_name}}"
     state: present
     compose:
-    - "{{compose}}"
-    - "{{service_imbude.network_bindpoints is defined | ternary(compose_storage_folder~'/'~stack_name~'/'~'bindpoint-compose.yml', {})}}"
-    - "{{service_imbude.traefik is defined | ternary(compose_storage_folder~'/'+stack_name~'/'~'traefik-compose.yml', {})}}"
+      - "{{compose}}"
+      - "{{service_imbude.network_bindpoints is defined | ternary(compose_storage_folder~'/'~stack_name~'/'~'bindpoint-compose.yml', {})}}"
+      - "{{service_imbude.traefik is defined | ternary(compose_storage_folder~'/'+stack_name~'/'~'traefik-compose.yml', {})}}"
