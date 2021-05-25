@@ -1,21 +1,34 @@
 http:
   # Add the sandbox routers
   routers:
-    {% for i in range(1, 55) %}
-    sandbox-router-https-{{i}}:
+    sandbox-main-https:
+      entryPoints:
+        - https
+      service: sandbox-service-201
+      rule: HostRegexp(`sandbox.{{core_domain_name}}`)
+      tls:
+        domains:
+          - main: "*.sandbox.{{core_domain_name}}"
+            sans:
+            {% for i in range(200, 255) %}
+              - "*.sandbox-{{i}}.{{core_domain_name}}"
+            {% endfor %}
+        
+    {% for i in range(200, 255) %}
+    sandbox-router-{{i}}-https:
       entryPoints:
         - https
       service: sandbox-service-{{i}}
-      rule: Host(`{{i}}.sandbox.{{core_domain_name}}`)
-    sandbox-router-http-{{i}}:
+      rule: HostRegexp(`{subdomain:[a-z]+.}sandbox-{{i}}.{{core_domain_name}}`)
+    sandbox-router-{{i}}-http:
       entryPoints:
         - http
       service: sandbox-service-{{i}}
-      rule: Host(`{{i}}.sandbox.{{core_domain_name}}`)
+      rule: HostRegexp(`{subdomain:[a-z]+.}sandbox-{{i}}.{{core_domain_name}}`)
     {% endfor %}
   # Add the sandbox services
   services:
-  {% for i in range(1, 55) %}
+  {% for i in range(200, 255) %}
     sandbox-service-{{i}}:
       loadBalancer:
         servers:

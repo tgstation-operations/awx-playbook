@@ -21,7 +21,7 @@ dependencies:
               - "--entrypoints.https.address=:443"
               - "--entrypoints.https.http.tls.certResolver=letsencrypt-dns"
               - "--entrypoints.https.http.tls.domains[0].main={{tls_domain_name}}"
-              - "--entrypoints.https.http.tls.domains[0].sans=*.{{tls_domain_name}}"
+              - "--entrypoints.https.http.tls.domains[0].sans=*.{{tls_domain_name}}{{',*.' ~ core_domain_name if core_domain_name != tls_domain_name}}"
               - "--providers.file.directory=/etc/traefik/conf.d/"
               - "--providers.file.watch=true"
               - "--certificatesresolvers.letsencrypt-dns.acme.storage=/etc/traefik/acme/acme.json"
@@ -52,7 +52,7 @@ dependencies:
                   - node.role != manager
               update_config:
                 parallelism: 1
-                delay: 10s
+                delay: 15s
                 failure_action: rollback
               restart_policy:
                 condition: any
