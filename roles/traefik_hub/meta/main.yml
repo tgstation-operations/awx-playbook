@@ -6,9 +6,13 @@ dependencies:
       service_imbude:
         network_bindpoints:
           "traefik":
-            "acme-store-v2":
+            "acme-store-v3":
               src: "/etc/traefik/acme/"
-              scope: global
+              scope: stack
+          "traefik-tls-controller":
+            "acme-store-v3":
+              src: "/etc/traefik/acme/"
+              scope: stack
               
       compose:
         version: "3.2"
@@ -26,12 +30,47 @@ dependencies:
               - "--providers.file.directory=/etc/traefik/conf.d/"
               - "--providers.file.watch=true"
               - "--certificatesresolvers.letsencrypt-dns.acme.storage=/etc/traefik/acme/acme.json"
+              #this is so we can ensure only one server per location actually does tls challenges
+              - "--certificatesresolvers.letsencrypt-dns.acme.caServer=https://devnull.notatld/"
+            volumes:
+              - /etc/ansible-managed/docker_volumes/traefik-hub/conf.d/:/etc/traefik/conf.d/
+            ports:
+              - target: 80
+                published: 80
+              - target: 443
+                published: 443
+              - target: 8080
+                published: 8080
+            deploy:
+              mode: global
+              placement:
+                constraints:
+                  - "node.role != manager"
+              update_config:
+                parallelism: 1
+                delay: 60s
+                failure_action: rollback
+              restart_policy:
+                condition: any
+
+          traefik-tls-controller:
+            image: traefik
+            command:
+              - "--api.insecure=true"
+              - "--api.dashboard=true"
+              - "--entrypoints.http.address=:80"
+              - "--entrypoints.https.address=:443"
+              - "--entrypoints.https.http.tls.certResolver=letsencrypt-dns"
+              - "--entrypoints.https.http.tls.domains[0].main={{tls_domain_name}}"
+              - "--entrypoints.https.http.tls.domains[0].sans=*.{{tls_domain_name}}{{',*.' ~ core_domain_name if core_domain_name != tls_domain_name}}"
+              - "--providers.file.directory=/etc/traefik/conf.d/"
+              - "--providers.file.watch=true"
+              - "--certificatesresolvers.letsencrypt-dns.acme.storage=/etc/traefik/acme/acme.json"
               - "--certificatesresolvers.letsencrypt-dns.acme.dnschallenge=true"
               - "--certificatesresolvers.letsencrypt-dns.acme.dnschallenge.provider=cloudflare"
-              - "--certificatesresolvers.letsencrypt-dns.acme.dnschallenge.delaybeforecheck=15"
+              - "--certificatesresolvers.letsencrypt-dns.acme.dnschallenge.delaybeforecheck=5"
               - "--certificatesresolvers.letsencrypt-dns.acme.dnschallenge.resolvers=1.1.1.1:53,8.8.8.8:53"
               - "--certificatesresolvers.letsencrypt-dns.acme.email=traefik-hub@tgstation13.org"
-              - "{{'--certificatesresolvers.letsencrypt-dns.acme.caServer=https://acme-v02.api.letsencrypt.org/directory' if (traefik_ssl_mode == 'manager') else '--certificatesresolvers.letsencrypt-dns.acme.caServer=https://devnull.notatld/'}}"
             environment:
               CF_DNS_API_TOKEN_FILE: "/run/secrets/cf-dns-token"
               CF_ZONE_API_TOKEN_FILE: "/run/secrets/cf-zone-token"
@@ -41,23 +80,20 @@ dependencies:
             volumes:
               - /etc/ansible-managed/docker_volumes/traefik-hub/conf.d/:/etc/traefik/conf.d/
             ports:
-              - target: 80
-                published: "{{80 if (traefik_ssl_mode != 'manager') else 65080}}"
-              - target: 443
-                published: "{{80 if (traefik_ssl_mode != 'manager') else 65443}}"
               - target: 8080
-                published: "{{80 if (traefik_ssl_mode != 'manager') else 68080}}"
+                published: 68080
             deploy:
               mode: global
               placement:
                 constraints:
-                  - "{{'node.role == manager' if traefik_ssl_mode == 'manager' else 'node.role != manager'}}"
+                  - "node.role == manager
               update_config:
                 parallelism: 1
                 delay: 60s
                 failure_action: rollback
               restart_policy:
                 condition: any
+
         secrets:
           cf-dns-token:
             external:

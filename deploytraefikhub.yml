@@ -24,8 +24,11 @@
       #  - Restart Traefik-hub
   
   handlers:
-    - name: Restart Traefik-hub
-      command: "docker service update --force traefik-hub-tls_traefik traefik-hub_traefik"
+    - name: Restart Traefik
+      shell: |
+        docker service update --force traefik-hub_traefik-tls-controller
+        sleep 30
+        docker service update --force traefik-hub_traefik
       delegate_to: "{{ groups['docker_swarm_managers'][0] }}"
       run_once: True
 
@@ -33,20 +36,7 @@
   roles:
     - docker_swarm_join_workers
     
-- name: Traefik-hub TLS Manager Service Deployment
-  hosts: docker_swarm_managers
-  run_once: True
-  roles:
-    - role: traefik_hub
-      traefik_stack_name: "traefik-hub-tls"
-      traefik_ssl_mode: "manager"
-- name: Wait for cert generation
-  hosts: docker_swarm_managers
-  tasks:
-    - wait_for:
-        timeout: 30
-      delegate_to: localhost
-- name: Traefik-hub Worker Service Deployment
+- name: Traefik-hub Deployment
   hosts: docker_swarm_managers
   run_once: True
   roles:
