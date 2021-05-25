@@ -30,6 +30,7 @@ dependencies:
               - "--certificatesresolvers.letsencrypt-dns.acme.dnschallenge.delaybeforecheck=15"
               - "--certificatesresolvers.letsencrypt-dns.acme.dnschallenge.resolvers=1.1.1.1:53,8.8.8.8:53"
               - "--certificatesresolvers.letsencrypt-dns.acme.email=traefik-hub@tgstation13.org"
+              - "{{'--certificatesresolvers.letsencrypt-dns.acme.caServer=https://acme-v02.api.letsencrypt.org/directory' if (traefik_ssl_mode == 'manager') else '--certificatesresolvers.letsencrypt-dns.acme.caServer=https://devnull.notatld/'}}"
             environment:
               CF_DNS_API_TOKEN_FILE: "/run/secrets/cf-dns-token"
               CF_ZONE_API_TOKEN_FILE: "/run/secrets/cf-zone-token"
@@ -49,7 +50,7 @@ dependencies:
               mode: global
               placement:
                 constraints:
-                  - node.role != manager
+                  - "{{'node.role == manager' if traefik_ssl_mode == 'manager' else 'node.role != manager'}}"
               update_config:
                 parallelism: 1
                 delay: 60s
