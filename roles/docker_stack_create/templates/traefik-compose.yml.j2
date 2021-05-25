@@ -12,7 +12,7 @@ services:
       labels:
         {% for route_name, route in routes.items() %}
         - 'traefik.http.routers.{{route_name}}-ext.rule={{route.route_rule}}'
-        {% if route.service_override %}
+        {% if route.service_override is defined %}
         - 'traefik.http.routers.{{route_name}}-ext.service={{route.service_override}}'
         {% else %}
         - 'traefik.http.routers.{{route_name}}-ext.service={{route_name}}-ext-srv'
