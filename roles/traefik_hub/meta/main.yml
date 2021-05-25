@@ -86,7 +86,7 @@ dependencies:
               mode: global
               placement:
                 constraints:
-                  - "node.role == manager
+                  - "node.role == manager"
               update_config:
                 parallelism: 1
                 delay: 60s
