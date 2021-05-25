@@ -14,6 +14,7 @@ services:
         - 'traefik.http.routers.{{route_name}}-ext.rule={{route.route_rule}}'
         {% if route.service_override is defined %}
         - 'traefik.http.routers.{{route_name}}-ext.service={{route.service_override}}'
+        - 'traefik.http.services.{{route_name}}-ext-dummysrv.loadbalancer.server.port=8080'
         {% else %}
         - 'traefik.http.routers.{{route_name}}-ext.service={{route_name}}-ext-srv'
         - 'traefik.http.services.{{route_name}}-ext-srv.loadbalancer.server.port={{route.service_port | default(service_imbude_defaults.traefik.defaults.service_port)}}'

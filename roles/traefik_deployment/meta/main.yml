@@ -20,7 +20,7 @@ dependencies:
             "traefik-dash":
               enabled: TRUE
               route_rule: "{{traefik_external_rule}}"
-              service_port: 8080
+              service_override: "api@internal"
               
       compose:
         version: "3.2"
