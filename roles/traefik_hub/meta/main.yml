@@ -93,7 +93,6 @@ dependencies:
                 failure_action: rollback
               restart_policy:
                 condition: any
-
         secrets:
           cf-dns-token:
             external:

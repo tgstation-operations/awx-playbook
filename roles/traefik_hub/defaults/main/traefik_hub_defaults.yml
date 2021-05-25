@@ -1,4 +1,2 @@
 traefik_stack_name: 'traefik-hub'
 
-traefik_ssl_mode: 'worker'
-
