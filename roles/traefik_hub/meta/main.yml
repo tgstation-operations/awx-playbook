@@ -6,8 +6,9 @@ dependencies:
       service_imbude:
         network_bindpoints:
           "traefik":
-            "acme-store":
+            "acme-store-v2":
               src: "/etc/traefik/acme/"
+              scope: global
               
       compose:
         version: "3.2"
@@ -41,11 +42,11 @@ dependencies:
               - /etc/ansible-managed/docker_volumes/traefik-hub/conf.d/:/etc/traefik/conf.d/
             ports:
               - target: 80
-                published: 80
+                published: "{{80 if (traefik_ssl_mode != 'manager') else 65080}}"
               - target: 443
-                published: 443
+                published: "{{80 if (traefik_ssl_mode != 'manager') else 65443}}"
               - target: 8080
-                published: 8080
+                published: "{{80 if (traefik_ssl_mode != 'manager') else 68080}}"
             deploy:
               mode: global
               placement:
