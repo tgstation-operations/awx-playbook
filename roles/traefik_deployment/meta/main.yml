@@ -20,7 +20,7 @@ dependencies:
             "traefik-dash":
               enabled: TRUE
               route_rule: "{{traefik_external_rule}}"
-              service_override: "api@internal"
+              service_port: 8080
               
       compose:
         version: "3.2"
@@ -29,6 +29,7 @@ dependencies:
             image: traefik
             command:
               - "--api.insecure=true"
+              - "--api.dashboard=true"
               - "--entrypoints.http.address=:80"
               - "--entrypoints.https.address=:443"
               - "--providers.docker"
