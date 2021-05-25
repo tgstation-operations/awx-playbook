@@ -20,6 +20,11 @@ http:
         - https
       service: sandbox-service-{{i}}
       rule: HostRegexp(`{subdomain:[a-z]+.}sandbox-{{i}}.{{core_domain_name}}`)
+      tls:
+        domains:
+          - main: "sandbox-{{i}}.{{core_domain_name}}"
+            sans: 
+              - "*.sandbox-{{i}}.{{core_domain_name}}"
     sandbox-router-{{i}}-http:
       entryPoints:
         - http
@@ -32,5 +37,5 @@ http:
     sandbox-service-{{i}}:
       loadBalancer:
         servers:
-          - url: http://{{sandbox_subnet_prefix}}.2{{'%02d' % i}}
+          - url: http://{{sandbox_subnet_prefix}}.{{'%02d' % i}}
   {% endfor %}
