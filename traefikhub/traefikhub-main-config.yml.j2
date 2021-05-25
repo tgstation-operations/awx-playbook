@@ -5,12 +5,12 @@ http:
       entryPoints:
         - "http"
       service: "sitehomepage-service"
-      rule: "PathPrefix('/')"
+      rule: "PathPrefix(`/`)"
     "sitehomepage-tls":
       entryPoints:
         - "https"
       service: "sitehomepage-service"
-      rule: "PathPrefix('/')"
+      rule: "PathPrefix(`/`)"
   services:
     "sitehomepage-service":
       loadBalancer:

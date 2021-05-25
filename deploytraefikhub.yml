@@ -15,6 +15,8 @@
         src: "traefikhub/traefikhub-main-config.yml.j2"
         dest: "/etc/ansible-managed/docker_volumes/traefik-hub/conf.d/01-main.yml"
         lstrip_blocks: true
+      notify:
+        - Restart Traefik-hub
     - name: template sandbox config
       template:
         src: "traefikhub/traefikhub-sandbox-config.yml.j2"
