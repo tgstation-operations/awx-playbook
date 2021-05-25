@@ -10,24 +10,23 @@
       file:
         path: "/etc/ansible-managed/docker_volumes/traefik-hub/conf.d/"
         state: directory
-#    - name: template main config
-#      template:
-#        src: "traefikhub/traefikhub-main-config.yml.j2"
-#        dest: "/etc/ansible-managed/docker_volumes/traefik-hub/conf.d/01-main.yml"
-#        lstrip_blocks: true
+    - name: template main config
+      template:
+        src: "traefikhub/traefikhub-main-config.yml.j2"
+        dest: "/etc/ansible-managed/docker_volumes/traefik-hub/conf.d/01-main.yml"
+        lstrip_blocks: true
     - name: template sandbox config
       template:
         src: "traefikhub/traefikhub-sandbox-config.yml.j2"
         dest: "/etc/ansible-managed/docker_volumes/traefik-hub/conf.d/21-sandbox.yml"
         lstrip_blocks: true
-      #notify:
-      #  - Restart Traefik-hub
+      notify:
+        - Restart Traefik-hub
   
   handlers:
-    - name: Restart Traefik
+    - name: Restart Traefik-hub
       shell: |
-        docker service update --force traefik-hub_traefik-tls-controller
-        sleep 30
+        sleep 60
         docker service update --force traefik-hub_traefik
       delegate_to: "{{ groups['docker_swarm_managers'][0] }}"
       run_once: True

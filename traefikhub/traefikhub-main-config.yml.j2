@@ -1,0 +1,19 @@
+http:
+  # Add the sandbox routers
+  routers:
+    "sitehomepage":
+      entryPoints:
+        - "http"
+      service: "sitehomepage-service"
+      rule: "PathPrefix('/')"
+    "sitehomepage-tls":
+      entryPoints:
+        - "https"
+      service: "sitehomepage-service"
+      rule: "PathPrefix('/')"
+  services:
+    "sitehomepage-service":
+      loadBalancer:
+        servers:
+          ##todo: make config
+          - url: "http://192.168.5.21"
