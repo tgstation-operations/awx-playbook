@@ -81,7 +81,7 @@ dependencies:
               - /etc/ansible-managed/docker_volumes/traefik-hub/conf.d/:/etc/traefik/conf.d/
             ports:
               - target: 8080
-                published: 68080
+                published: 60080
             deploy:
               mode: global
               placement:
