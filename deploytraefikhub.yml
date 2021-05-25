@@ -38,9 +38,8 @@
   run_once: True
   roles:
     - role: traefik_hub
-      vars:
-        traefik_stack_name: "traefik-hub-tls"
-        traefik_ssl_mode: "manager"
+      traefik_stack_name: "traefik-hub-tls"
+      traefik_ssl_mode: "manager"
 - name: Wait for cert generation
   hosts: docker_swarm_managers
   tasks:
