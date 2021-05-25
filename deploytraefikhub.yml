@@ -20,6 +20,15 @@
         src: "traefikhub/traefikhub-sandbox-config.yml.j2"
         dest: "/etc/ansible-managed/docker_volumes/traefik-hub/conf.d/21-sandbox.yml"
         lstrip_blocks: true
+      notify:
+        - Restart Traefik-hub
+  
+  handlers:
+    - name: Restart Traefik-hub
+      docker_swarm_service:
+        name: "traefik-hub_traefik"
+        force_update: True
+      delegate_to: "{{ groups['docker_swarm_managers'][0] }}"
 
 - hosts: docker_swarm_workers
   roles:
