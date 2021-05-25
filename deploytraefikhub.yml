@@ -25,9 +25,7 @@
   
   handlers:
     - name: Restart Traefik-hub
-      docker_swarm_service:
-        name: "traefik-hub_traefik"
-        force_update: True
+      command: "docker service update --force traefik-hub_traefik"
       delegate_to: "{{ groups['docker_swarm_managers'][0] }}"
 
 - hosts: docker_swarm_workers
