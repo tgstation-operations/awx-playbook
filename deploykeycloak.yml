@@ -17,6 +17,6 @@
     - traefik_deployment
 
 - hosts: docker_swarm_managers
-  run_one: True
+  run_once: True
   roles:
     - keycloak_clustered_deployment
