@@ -1,5 +1,3 @@
-# Big shoutout to my homies at DigitalOcean from which I could base the initial docker setup on
-# (https://www.digitalocean.com/community/tutorials/how-to-use-ansible-to-install-and-set-up-docker-on-ubuntu-18-04 but we're debian gang instead)
 - name: Create Postgres database storage directory
   file:
     path: '{{ postgres_data_directory }}'
@@ -10,7 +8,7 @@
   include_role:
     name: 'docker_stack_create'
   vars:
-    stack_name: '{{ keycloak_container_name }}'
+    stack_name: '{{ keycloak_stack_name }}'
     compose:
       version: "3.2"
       networks:

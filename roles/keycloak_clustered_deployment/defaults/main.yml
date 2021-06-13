@@ -1,9 +1,13 @@
 ---
-# Name of the keycloak container, used for Docker container naming and the postgres storage path
-keycloak_container_name: keycloak
+# Name of the keycloak stack, used for Docker container naming and the postgres storage path
+keycloak_stack_name: keycloak
+# Name given to the traefik stack
+traefik_stack_name: '{{keycloak_stack_name}}_traefik'
+# Name of the network which connects all services for Keycloak
+traefik_docker_network: "{{traefik_stack_name}}"
 # The external port to expose for Postgres
 postgres_external_port: 5432
 # The directory in which to mount the data directory from Postgres
-postgres_data_directory: /etc/postgres-storage/{{ keycloak_container_name }}
+postgres_data_directory: /etc/postgres-storage/{{ keycloak_stack_name }}
 # The URL that is used for the base of all routes for Keycloak
 keycloak_frontend_url: "http://localhost:8080/auth"
