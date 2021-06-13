@@ -11,10 +11,6 @@
     stack_name: '{{ keycloak_stack_name }}'
     compose:
       version: "3.2"
-      networks:
-        traefik:
-          external:
-            name: '{{ traefik_docker_network }}'
       services:
         postgres:
           image: "{{ postgres_container_image }}"
