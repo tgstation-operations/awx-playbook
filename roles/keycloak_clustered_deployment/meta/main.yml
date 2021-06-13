@@ -5,6 +5,3 @@ dependencies:
       docker_network_name: "{{traefik_docker_network}}"
       docker_network_driver: "overlay"
   - role: traefik_deployment
-    vars:
-      # Rule used for matching traefik's control panel
-      traefik_external_rule: "Host(`{{traefik_stack_name}}.{{core_domain_name}}`)"

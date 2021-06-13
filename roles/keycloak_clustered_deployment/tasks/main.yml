@@ -9,6 +9,13 @@
     name: 'docker_stack_create'
   vars:
     stack_name: '{{ keycloak_stack_name }}'
+    service_imbude:
+      traefik:
+        keycloak:
+          enabled: TRUE
+          route_rule: '{{ keycloak_traefik_rule }}'
+          service_port: 8080
+          sticky_loadbalance: TRUE
     compose:
       version: "3.2"
       services:
@@ -31,13 +38,6 @@
             - '{{ traefik_docker_network }}'
           deploy:
             mode: global
-            labels:
-              - 'traefik.enable=true'
-              - 'traefik.http.routers.keycloak.rule={{ keycloak_traefik_rule }}'
-              - 'traefik.http.services.keycloak-service.loadbalancer.sticky=true'
-              - 'traefik.http.services.keycloak-service.loadbalancer.server.port=8080'
-              - 'traefik.http.routers.keycloak.service=keycloak-service'
-              - 'traefik.docker.network={{ traefik_docker_network }}'
           ports:
             - '7600:7600' # Used for inter-host communications for clustered mode
           environment:
