@@ -12,10 +12,11 @@
     service_imbude:
       traefik:
         keycloak:
-          enabled: TRUE
-          route_rule: '{{ keycloak_traefik_rule }}'
-          service_port: 8080
-          sticky_loadbalance: TRUE
+          auth:
+            enabled: TRUE
+            route_rule: '{{ keycloak_traefik_rule }}'
+            service_port: 8080
+            sticky_loadbalance: TRUE
     compose:
       version: "3.2"
       services:
