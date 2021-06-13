@@ -12,7 +12,7 @@
   vars:
     stack_name: '{{ keycloak_container_name }}'
     compose:
-      version: "3"
+      version: "3.2"
       networks:
         traefik:
           external:
