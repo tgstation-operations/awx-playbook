@@ -11,11 +11,12 @@
     mode: '0740'
 
 - name: Create keycloak container stack
-  docker_stack:
-    name: '{{ keycloak_container_name }}'
-    state: present
+  include_role:
+    name: 'docker_stack_create'
+  vars:
+    stack_name: '{{ keycloak_container_name }}'
     compose:
-    - version: "3"
+      version: "3"
       networks:
         traefik:
           external:
