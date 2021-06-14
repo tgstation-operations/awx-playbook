@@ -1,9 +1,11 @@
 ---
 # Name of the keycloak stack, used for Docker container naming and the postgres storage path
 keycloak_stack_name: keycloak
-# Name given to the traefik stack
-traefik_stack_name: '{{keycloak_stack_name}}_traefik'
-# Name of the network which connects all services for Keycloak
+# Name of the traefik stack
+traefik_stack_name: '{{keycloak_stack_name}}-traefik'
+# Rule used for matching traefik's control panel
+traefik_external_rule: "Host(`{{traefik_stack_name}}.{{core_domain_name}}`)"
+# Name of the network to use for traefik's connection to containers
 traefik_docker_network: "{{traefik_stack_name}}"
 # The external port to expose for Postgres
 postgres_external_port: 5432

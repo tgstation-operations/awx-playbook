@@ -20,8 +20,9 @@
     compose:
       version: "3.2"
       networks:
-        '{{ traefik_docker_network }}':
-          external: TRUE
+        traefik_external:
+          external:
+            name: '{{ traefik_docker_network }}'
       services:
         postgres:
           image: "{{ postgres_container_image }}"
@@ -39,7 +40,7 @@
         keycloak:
           image: '{{ keycloak_container_image }}' # See https://github.com/ivangfr/keycloak-clustered
           networks:
-            - '{{ traefik_docker_network }}'
+            - 'traefik_external'
           deploy:
             mode: global
           ports:
