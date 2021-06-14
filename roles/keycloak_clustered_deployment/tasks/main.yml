@@ -19,6 +19,9 @@
             sticky_loadbalance: TRUE
     compose:
       version: "3.2"
+      networks:
+        '{{ traefik_docker_network }}':
+          external: TRUE
       services:
         postgres:
           image: "{{ postgres_container_image }}"
