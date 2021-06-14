@@ -35,8 +35,6 @@
             POSTGRES_PASSWORD: '{{ postgres_password }}'
         keycloak:
           image: '{{ keycloak_container_image }}' # See https://github.com/ivangfr/keycloak-clustered
-          networks:
-            - 'traefik'
           deploy:
             mode: global
           ports:
