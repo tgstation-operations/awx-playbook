@@ -1,9 +1,3 @@
 dependencies:
   - docker
   - role: traefik_deployment
-    vars:
-      traefik_stack_name: '{{traefik_stack_name}}'
-      # Rule used for matching traefik's control panel
-      traefik_external_rule: 'Host(`{{traefik_stack_name}}.{{core_domain_name}}`)'
-      # Name of the network to use for traefik's connection to containers
-      traefik_docker_network: '{{traefik_stack_name}}'
