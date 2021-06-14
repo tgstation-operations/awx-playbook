@@ -19,10 +19,6 @@
             sticky_loadbalance: TRUE
     compose:
       version: "3.2"
-      networks:
-        traefik_external:
-          external:
-            name: '{{ traefik_docker_network }}'
       services:
         postgres:
           image: "{{ postgres_container_image }}"
@@ -40,7 +36,7 @@
         keycloak:
           image: '{{ keycloak_container_image }}' # See https://github.com/ivangfr/keycloak-clustered
           networks:
-            - 'traefik_external'
+            - 'traefik'
           deploy:
             mode: global
           ports:
