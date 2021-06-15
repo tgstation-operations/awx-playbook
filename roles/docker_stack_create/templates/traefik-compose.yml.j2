@@ -11,6 +11,7 @@ services:
     deploy:
       labels:
         {% for route_name, route in routes.items() %}
+        - 'traefik.docker.network=traefik'
         - 'traefik.http.routers.{{route_name}}-ext.rule={{route.route_rule}}'
         {% if route.service_override is defined %}
         - 'traefik.http.routers.{{route_name}}-ext.service={{route.service_override}}'
