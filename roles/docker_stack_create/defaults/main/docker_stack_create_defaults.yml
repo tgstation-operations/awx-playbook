@@ -1,9 +1,8 @@
 #stack_name: "You must provide this"
 service_imbude: []
 service_imbude_defaults:
-  #"service_name": []
   network_bindpoints:
-    #"service_name":
+    #"docker_service_name":
       #"bindpoint-volume-name":
         #src: "/abolute/docker/container/path"
         #dest: "relative/nfs/path"
@@ -11,21 +10,29 @@ service_imbude_defaults:
         #...
     
     defaults:
+      #Set create to false when attaching to a mountpoint owned by a different service to avoid overriding mountpoint settings set by that service.
+      create: True
+      #docker doesn't let you change mountpoints already mounted, changing revision between a, b, (and sometimes c) lets you deploy a new mountpoint for those cases.
+      revision: "a" 
       #dest: "bindpoint-volume-name"
-      backup: FALSE
-      replication: FALSE
-      #scope: "global|stack|service"
       scope: service
+      #scope: "global|stack|service"
+      
       permissions:
         #read|write|none/null
         workers: write
         managers: write
         local_lan: none
         global_lan: none
+      #everything below this is todo.
+      backup: FALSE
+      replication: FALSE
       extra_zfs_properties: []
+      
+      
           
   traefik:
-    #"docker_service_name:"
+    #"docker_service_name":
       #"traefik_route_name":
         #enabled: TRUE
         #route_rule: ""
@@ -35,11 +42,17 @@ service_imbude_defaults:
       service_port: 80
       #service_override: ""
       #route_rule: "Host(`localhost`) && PathPrefix(`/traefik_route_name`)"
+      sticky_loadbalance: FALSE
+      #everything below this is todo.
       compress: TRUE
       auth: FALSE
       https: TRUE
       redirect_http: TRUE
-      sticky_loadbalance: FALSE
+      
 
 #compose: "file or dict"
 compose_storage_folder: "~/ansible-run/compose-store"
+nfs_zfs_dockerstore_directory: "/dockerstore"
+local_lan_visor_id: "5"
+local_lan_network: "192.168.{{local_lan_visor_id}}.1/24"
+global_lan_network: "192.168.0.1/17"

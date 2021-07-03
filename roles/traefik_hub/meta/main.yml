@@ -5,14 +5,20 @@ dependencies:
       stack_name: "{{traefik_stack_name}}"
       service_imbude:
         network_bindpoints:
-          "traefik":
-            "acme-store-v3":
-              src: "/etc/traefik/acme/"
-              scope: stack
           "traefik-tls-controller":
             "acme-store-v3":
               src: "/etc/traefik/acme/"
               scope: stack
+              permissions:
+                workers:read
+                managers:write
+          "traefik":
+            "acme-store-v3":
+              src: "/etc/traefik/acme/"
+              scope: stack
+              create: False
+              
+          
               
       compose:
         version: "3.2"
