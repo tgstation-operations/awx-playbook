@@ -13,13 +13,13 @@
       zfs_manager_permission: "{{zfs_permissions.managers | default(zfs_permission_defaults.managers)}}"
       zfs_local_lan_permission: "{{zfs_permissions.local_lan | default(zfs_permission_defaults.local_lan)}}"
       zfs_global_lan_permission: "{{zfs_permissions.global_lan | default(zfs_permission_defaults.global_lan)}}"
-      zfs_rw_permission: "{{((groups['docker_swarm_workers'] if zfs_worker_permission == 'write' else []) + (groups['docker_swarm_managers'] if zfs_manager_permission == 'write' else []) + ([local_lan_network] if zfs_local_lan_permission == 'write' else []) + ([global_lan_network] if zfs_global_lan_permission == 'write' else [])) | join(':')}}"
-      zfs_ro_permission: "{{((groups['docker_swarm_workers'] if zfs_worker_permission == 'read' else []) + (groups['docker_swarm_managers'] if zfs_manager_permission == 'read' else []) + ([local_lan_network] if zfs_local_lan_permission == 'read' else []) + ([global_lan_network] if zfs_global_lan_permission == 'read' else [])) | join(':')}}"
+      zfs_rw_permission: "{{((groups['docker_swarm_workers'] if zfs_worker_permission == 'write' else []) + (groups['docker_swarm_managers'] if zfs_manager_permission == 'write' else []) + ([local_lan_network] if zfs_local_lan_permission == 'write' else []) + ([global_lan_network] if zfs_global_lan_permission == 'write' else [])) | join(',rw=@')}}"
+      zfs_ro_permission: "{{((groups['docker_swarm_workers'] if zfs_worker_permission == 'read' else []) + (groups['docker_swarm_managers'] if zfs_manager_permission == 'read' else []) + ([local_lan_network] if zfs_local_lan_permission == 'read' else []) + ([global_lan_network] if zfs_global_lan_permission == 'read' else [])) | join(',ro=@')}}"
     zfs:
       name: "dockerstore/{{nfs_namespace}}/{{zfs_target_prefix}}/{{zfs_target_suffix}}"
       state: present
       extra_zfs_properties:
-        sharenfs: "nosuid{{',rw=' ~ zfs_rw_permission if (zfs_rw_permission | length) > 1 else ''}}{{',ro=' ~ zfs_ro_permission if (zfs_ro_permission | length) > 1 else ''}}{{'rw=localhost,ro=localhost' if ((zfs_rw_permission~zfs_ro_permission) | length) <= 2 else ''}}"
+        sharenfs: "sec=sys{{',rw=@' ~ zfs_rw_permission if (zfs_rw_permission | length) > 1 else ''}}{{',ro=@' ~ zfs_ro_permission if (zfs_ro_permission | length) > 1 else ''}}{{'rw=@localhost,ro=@localhost' if ((zfs_rw_permission~zfs_ro_permission) | length) <= 2 else ''}}"
     when: imbude_bindpoints_volume.create | default(True)
       
     delegate_to: "{{groups['nas'][0]}}"
