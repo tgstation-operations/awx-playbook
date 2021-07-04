@@ -37,7 +37,7 @@
     docker_volume:
       recreate: options-changed
       #even if two services use the same bindpoint, we give each their own "named volume" for easier management
-      name: "NFS-{{stack_name}}-{{imbude_bindpoints_service.service_name}}-{{imbude_bindpoints_volume.volume_name}}-{{imbude_bindpoints_service.revision | default(service_imbude_defaults.network_bindpoints.default.revision)}}"
+      name: "NFS-{{stack_name}}-{{imbude_bindpoints_service.service_name}}-{{imbude_bindpoints_volume.volume_name}}-{{imbude_bindpoints_service.revision | default(service_imbude_defaults.network_bindpoints.defaults.revision)}}"
       driver_options:
         type: "nfs"
         o: "addr={{groups['nas'][0]}},nolock,soft,rw"
