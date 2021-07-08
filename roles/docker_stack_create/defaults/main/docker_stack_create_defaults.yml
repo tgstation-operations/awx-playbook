@@ -48,7 +48,6 @@ service_imbude_defaults:
       auth: FALSE
       https: TRUE
       redirect_http: TRUE
-      sticky_loadbalance: FALSE
 
 #compose: "file or dict"
 compose_storage_folder: "~/ansible-run/compose-store"
