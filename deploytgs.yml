@@ -1,0 +1,22 @@
+- hosts: docker_swarm_nodes
+  roles:
+    - docker
+
+- hosts: docker_swarm_managers
+  run_once: True
+  roles:
+    - docker_swarm_create
+    
+- hosts: docker_swarm_workers
+  roles:
+    - docker_swarm_join_workers
+
+# Prepare hosts
+- hosts: tgs_swarm
+  roles:
+    - prepare_tgs_nodes
+
+- hosts: docker_swarm_managers
+  run_once: True
+  roles:
+    - tgs_deployment

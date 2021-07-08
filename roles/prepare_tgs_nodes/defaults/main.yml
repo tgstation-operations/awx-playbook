@@ -1,0 +1,31 @@
+# TGS directory in which the core config file will exist
+tgs_dir: '/etc/tgs'
+# Host address upon which this workbook is run (192.168.x.x)
+host_addr: '{{ ansible_default_ipv4.address }}'
+# Should be null for this file to template properly
+tgs_swarm_controller: null
+# Where TGS configuration files are stored
+tgs_config_dir: '{{ tgs_dir }}/config'
+# Where TGS instances are stored
+tgs_instances_dir: '{{ tgs_dir }}/instances'
+# Where TGS logs are stored
+tgs_logs_dir: '{{ tgs_dir }}/logs'
+# External port for TGS communication
+tgs_external_port: 5000
+# The hostname for the postgres database, leave default to use docker's
+# dns resolution
+postgres_host: 'postgres'
+# The version of postgres used, for TGS postgres driver compatability
+postgres_version: "13.1"
+# The allowed origins for TGS web panel
+tgs_allowed_origins: ["localhost", "http://localhost:8080"]
+# This only surpresses warnings about config versions
+tgs_config_version: "3.0.0" 
+# Log level used for TGS' output
+tgs_log_level: "Trace"
+# External port for Postgres
+postgres_external_port: 5433
+# DB to store tgs data in
+postgres_db: "tgs"
+# User for postgres db
+postgres_user: "tgs_user"

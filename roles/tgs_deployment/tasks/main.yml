@@ -1,0 +1,47 @@
+- name: Construct list of ports for game servers on this server
+  set_fact:
+    _tgs_game_ports_processed: '{{ _tgs_game_ports_processed }} + [ "0.0.0.0:{{ item }}:{{ item }}" ]'
+  loop: "{{ tgs_game_ports }}"
+
+- name: Deploy tgs stack
+  include_role:
+    name: 'docker_stack_create'
+  vars:
+    stack_name: '{{ tgs_stack_name }}'
+    compose:
+      version: "3.2"
+      networks:
+        tgs_net:
+          driver: 'overlay'
+      services:
+        postgres:
+          image: "{{ postgres_container_image }}"
+          networks:
+            - tgs_net
+          deploy:
+            placement:
+              constraints: [ node.role == manager ]
+          volumes:
+            - '{{ postgres_data_directory }}:/var/lib/postgresql/data'
+          ports:
+            - '{{ postgres_external_port }}:5432'
+          environment:
+            POSTGRES_DB: '{{ postgres_db }}'
+            POSTGRES_USER: '{{ postgres_user }}'
+            POSTGRES_PASSWORD: '{{ postgres_password }}'
+        tgs:
+          image: '{{ tgs_container_image }}'
+          networks:
+            - tgs_net
+          deploy:
+            mode: global
+            placement:
+              constraints: [ node.labels.tgs_role == node ]
+          ports: '{{ [ tgs_external_port ~ ":5000" ] + _tgs_game_ports_processed }}'
+          volumes:
+            - '{{ tgs_dir }}/appsettings.Production.yml:/config_data/appsettings.Production.yml'
+            - '{{ tgs_config_dir }}:/config_data'
+            - '{{ tgs_instances_dir }}:/tgs4_instances'
+            - '{{ tgs_logs_dir }}:/tgs_logs'
+          cap_add:
+            - 'SYS_NICE'

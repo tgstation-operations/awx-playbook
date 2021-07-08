@@ -1,0 +1,28 @@
+# TGS directory in which the core config file will exist
+tgs_dir: '/etc/tgs'
+# TGS image to run
+tgs_container_image: 'tgstation/server:v4.12.1'
+# Where TGS configuration files are stored
+tgs_config_dir: '{{ tgs_dir }}/config'
+# Where TGS instances are stored
+tgs_instances_dir: '{{ tgs_dir }}/instances'
+# Where TGS logs are stored
+tgs_logs_dir: '{{ tgs_dir }}/logs'
+# External port for TGS communication
+tgs_external_port: 5000
+# Game server port to expose
+tgs_game_ports: [ 1337 ]
+# Don't modify this unless you know what you're doing, used for
+# constructing the list of ports for docker to publish for each
+# of the game servers
+_tgs_game_ports_processed: []
+# The name of the stack that will be deployed in the swarm
+tgs_stack_name: 'tgs'
+# Postgres container image
+postgres_container_image: "postgres:13.1"
+# External port for Postgres
+postgres_external_port: 5433
+# DB to store tgs data in
+postgres_db: "tgs"
+# User for postgres db
+postgres_user: "tgs_user"

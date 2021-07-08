@@ -1,0 +1,60 @@
+- name: Get local docker node information
+  docker_host_info:
+    debug: no
+  register: docker_data
+
+- name: Export docker swarm id of nodes to be assigned labels
+  set_fact:
+    swarm_node_id: "{{ docker_data['host_info']['Swarm']['NodeID'] }}"
+
+# technically this should probably be moved out into its own role
+# as it assumes the docker swarm host will also be a tgs node
+- name: Ensure all TGS nodes have correct labels
+  docker_node:
+    hostname: "{{ hostvars[item]['swarm_node_id'] }}"
+    labels:
+      tgs_role: 'node'
+  with_items: "{{ groups['tgs_swarm'] }}"
+  when: "'docker_swarm_managers' in group_names"
+
+- name: Ensure TGS directory exists
+  file:
+    path: '{{ tgs_dir }}'
+    state: directory
+    mode: '0740'
+
+- name: Get swarm controller IP for use in configuration
+  set_fact:
+    tgs_swarm_controller: "{{ hostvars[item]['ansible_default_ipv4'].address }}"
+  with_items: "{{ groups['tgs_swarm_controller'] }}"  
+
+- name: Generate TGS configuration for the controller
+  template:
+    src: 'appsettings.Production.yml.j2'
+    dest: '{{ tgs_dir }}/appsettings.Production.yml'
+    mode: '0640'
+
+- name: Create TGS config file directory
+  file:
+    path: '{{ tgs_config_dir }}'
+    state: directory
+    mode: '0740'
+
+- name: Create TGS instances directory
+  file:
+    path: '{{ tgs_instances_dir }}'
+    state: directory
+    mode: '0740'
+
+- name: Create TGS logs directory
+  file:
+    path: '{{ tgs_logs_dir }}'
+    state: directory
+    mode: '0740'
+
+# note to self this isn't specifically targeting the 'right' container
+- name: Create Postgres database storage directory
+  file:
+    path: '{{ postgres_data_directory }}'
+    state: directory
+    mode: '0740'

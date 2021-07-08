@@ -1,0 +1,33 @@
+General:
+    GitHubAccessToken: "{{ github_access_token }}"
+    SetupWizardMode: Never
+{% if tgs_log_level %}
+FileLogging:
+    LogLevel: {{ tgs_log_level }}
+{% endif %}
+{% if tgs_config_version %}
+    ConfigVersion: "{{ tgs_config_version }}"
+{% endif %}
+Database:
+    DatabaseType: PostgresSql # bit of a bruh moment
+    ServerVersion: "{{ postgres_version }}"
+    ConnectionString: "User ID={{ postgres_user }};Password={{ postgres_password }};Host={{ postgres_host }};Port=5432;Database={{ postgres_db }};"
+ControlPanel:
+    Enable: true
+{% if tgs_allowed_origins %}
+    AllowedOrigins: {{ tgs_allowed_origins }}
+{% endif %}
+Swarm:
+    PrivateKey: "{{ tgs_swarm_private_key }}"
+{% if tgs_swarm_controller != host_addr %}
+    ControllerAddress: "http://{{ tgs_swarm_controller }}:{{ tgs_external_port }}/"
+{% endif %}
+    Address: "http://{{ host_addr }}:{{ tgs_external_port }}/"
+    Identifier: "{{ tgs_host_identifier }}"
+Security:
+    OAuth:
+        Keycloak:
+            ClientId: "{{ tgs_keycloak_client_id }}"
+            ClientSecret: "{{ tgs_keycloak_client_secret }}"
+            RedirectUrl: "{{ tgs_keycloak_redirect_url }}"
+            ServerUrl: "{{ tgs_keycloak_server_url }}"
