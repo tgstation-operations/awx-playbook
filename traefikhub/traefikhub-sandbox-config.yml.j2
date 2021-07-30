@@ -20,7 +20,7 @@ http:
       entryPoints:
         - "https"
       service: "sandbox-service-{{i}}"
-      rule: "HostRegexp(`{subdomain:[a-z]+.}sandbox-{{i}}.{{core_domain_name}}`)"
+      rule: "HostRegexp(`{subdomain:[a-zA-Z0-9-]+.}sandbox-{{i}}.{{core_domain_name}}`)"
       tls:
         domains:
           - main: "sandbox-{{i}}.{{core_domain_name}}"
@@ -30,7 +30,7 @@ http:
       entryPoints:
         - "http"
       service: "sandbox-service-{{i}}"
-      rule: "HostRegexp(`{subdomain:[a-z]+.}sandbox-{{i}}.{{core_domain_name}}`)"
+      rule: "HostRegexp(`{subdomain:[a-zA-Z0-9-]+.}sandbox-{{i}}.{{core_domain_name}}`)"
     {% endfor %}
   # Add the sandbox services
   services:
