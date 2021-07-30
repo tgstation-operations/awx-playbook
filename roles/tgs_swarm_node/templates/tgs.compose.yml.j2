@@ -33,7 +33,7 @@ services:
       - '{{ tgs_api_port if not tgs_controller else tgs_controller_api_port }}:{{ tgs_api_port if not tgs_controller else tgs_controller_api_port }}'
       {% endif %}
       {% if (tgs_game_port > 0 and tgs_game_port < 65535) %}
-      - '{tgs_game_port}:{tgs_game_port}'
+      - '{{tgs_game_port}}:{{tgs_game_port}}'
       {% endif %}
     volumes:
       - '{{ tgs_config_dir }}:/config_data'
