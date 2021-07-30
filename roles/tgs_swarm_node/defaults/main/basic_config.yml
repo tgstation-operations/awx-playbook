@@ -12,7 +12,7 @@ tgs_game_port: 1331
 tgs_controller: False
 
 # API port for TGS <-> TGS communication as well as webui.
-tgs_api_port: {{tgs_game_port - 100}}
+tgs_api_port: '{{tgs_game_port - 100}}'
 
 # Port the controller can be reached at. (overrides tgs_api_port when deploying the controller)
 tgs_controller_api_port: 5000

@@ -36,5 +36,3 @@
     labels: '{ "tgs_ready_{{ tgs_server_name }}": "ready" }'
   delegate_to: "{{docker_swarm_node_item}}"
   delegate_facts: True
-
-

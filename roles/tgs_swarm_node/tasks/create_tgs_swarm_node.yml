@@ -7,13 +7,13 @@
     service_imbude:
       traefik:
         "tgs":
-          "tgs-{{tgs_server_name}}":
+          "tgs-control-panel":
             enabled: TRUE
             route_rule: "{{tgs_external_rule}}"
-            service_port: 5000
+            service_port: '{{tgs_api_port}}'
       network_bindpoints:
         "tgs":
-          "tgs_instance":
+          "tgs-instance":
             src: "/tgs4_instances"
             dest: "/tgs/game_servers/{{tgs_server_name}}"
             scope: global
