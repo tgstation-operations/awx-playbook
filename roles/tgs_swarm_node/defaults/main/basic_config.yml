@@ -1,0 +1,24 @@
+# Server name must be unique.
+#tgs_server_name: ""
+
+#tgs_keycloak_client_id: ""
+#tgs_keycloak_redirect_url: ""
+#tgs_keycloak_server_url: ""
+
+# You know what this is for.
+tgs_game_port: 1331
+
+# Set to true while deploying the controller
+tgs_controller: False
+
+# API port for TGS <-> TGS communication as well as webui.
+tgs_api_port: {{tgs_game_port - 100}}
+
+# Port the controller can be reached at. (overrides tgs_api_port when deploying the controller)
+tgs_controller_api_port: 5000
+
+tgs_external_rule: "Host(`{{tgs_stack_name}}.{{core_domain_name}}`)"
+
+# The allowed origins for TGS web panel
+tgs_allowed_origins:
+    - "*"

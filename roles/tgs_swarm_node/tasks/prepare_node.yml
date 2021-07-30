@@ -1,0 +1,40 @@
+- name: Create TGS config file directory
+  file:
+    path: '{{ tgs_config_dir }}'
+    state: directory
+    mode: '0740'
+  delegate_to: "{{docker_swarm_node_item}}"
+  delegate_facts: True
+
+- name: Generate TGS configuration
+  template:
+    src: 'appsettings.Production.yml.j2'
+    dest: '{{ tgs_config_dir }}/appsettings.Production.yml'
+    mode: '0640'
+    lstrip_blocks: True
+  delegate_to: "{{docker_swarm_node_item}}"
+  delegate_facts: True
+
+- name: Get local docker node information
+  docker_host_info:
+    debug: no
+  register: docker_data
+  delegate_to: "{{docker_swarm_node_item}}"
+  delegate_facts: True
+  
+- name: Export docker swarm id of node to be assigned labels
+  set_fact:
+    swarm_node_id: "{{ docker_data['host_info']['Swarm']['NodeID'] }}"
+  delegate_to: "{{docker_swarm_node_item}}"
+  delegate_facts: True
+
+# todo: move into docker_stack_create as a generic system
+- name: Label docker node as ready for tgs service
+  docker_node:
+    hostname: "{{ docker_data['host_info']['Swarm']['NodeID']  }}"
+    #ugly json encoding so the key can include a variable
+    labels: '{ "tgs_ready_{{ tgs_server_name }}": "ready" }'
+  delegate_to: "{{docker_swarm_node_item}}"
+  delegate_facts: True
+
+

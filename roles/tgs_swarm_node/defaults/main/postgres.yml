@@ -1,0 +1,4 @@
+# The version of postgres used, for TGS postgres driver compatability
+postgres_version: "13.1"
+
+postgres_container_image: "postgres:{{postgres_version}}"

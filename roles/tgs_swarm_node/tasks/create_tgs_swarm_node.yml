@@ -1,0 +1,19 @@
+- name: Deploy tgs node stack
+  include_role:
+    name: 'docker_stack_create'
+  vars:
+    stack_name: '{{ tgs_stack_name }}'
+    compose: '{{compose_storage_folder}}/tgs/{{tgs_server_name}}/tgs.compose.yml.j2'
+    service_imbude:
+      traefik:
+        "tgs":
+          "tgs-{{tgs_server_name}}":
+            enabled: TRUE
+            route_rule: "{{tgs_external_rule}}"
+            service_port: 5000
+      network_bindpoints:
+        "tgs":
+          "tgs_instance":
+            src: "/tgs4_instances"
+            dest: "/tgs/game_servers/{{tgs_server_name}}"
+            scope: global

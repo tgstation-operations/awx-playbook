@@ -6,17 +6,22 @@
   run_once: True
   roles:
     - docker_swarm_create
-    
+
 - hosts: docker_swarm_workers
   roles:
     - docker_swarm_join_workers
 
-# Prepare hosts
-- hosts: tgs_swarm
-  roles:
-    - prepare_tgs_nodes
-
 - hosts: docker_swarm_managers
   run_once: True
+  vars:
+    tgs_allow_external: False
+    tgs_controller_allow_external: False
   roles:
-    - tgs_deployment
+  - role: tgs_swarm_node
+    tgs_controller: True
+    tgs_server_name: controller
+    tgs_game_port: 0
+  
+  - role: tgs_swarm_node
+    tgs_server_name: campbell
+    tgs_game_port: 6337

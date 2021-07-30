@@ -1,0 +1,6 @@
+dependencies:
+  - docker
+  - role: docker_swarm_network
+    vars:
+      docker_network_name: "{{tgs_docker_network}}"
+      docker_network_driver: "overlay"

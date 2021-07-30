@@ -1,0 +1,23 @@
+- name: Deploy tgs controller stack
+  include_role:
+    name: 'docker_stack_create'
+  vars:
+    stack_name: '{{ tgs_stack_name }}'
+    compose: '{{compose_storage_folder}}/tgs/{{tgs_server_name}}/tgs.compose.yml.j2'
+    service_imbude:
+      traefik:
+        "tgs-controller":
+          "tgs-controller-control-panel":
+            enabled: TRUE
+            route_rule: "{{tgs_external_rule}}"
+            service_port: {{tgs_controller_api_port}}
+      network_bindpoints:
+        "tgs-controller":
+          "tgs_instance":
+            src: "/tgs4_instances"
+            dest: "/tgs/game_servers/{{tgs_server_name}}"
+            scope: global
+        "postgres":
+          "postgres-data":
+            src: "/var/lib/postgresql/data"
+            scope: service

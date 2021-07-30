@@ -1,0 +1,17 @@
+- name: Prepare docker nodes
+  include_tasks: "prepare_node.yml"
+  loop: "{{groups['tgs_swarm']}}"
+  loop_control:
+    loop_var: docker_swarm_node_item
+
+- name: Generate Compose
+  template:
+    src: 'tgs.compose.yml.j2'
+    dest: '{{compose_storage_folder}}/tgs/{{tgs_server_name}}/tgs.compose.yml.j2'
+    mode: '0640'
+    lstrip_blocks: True
+
+- name: Deploy tgs stack
+  vars:
+    tgs_task_to_include: "{{'create_tgs_swarm_controller' if tgs_controller else 'create_tgs_swarm_node'}}"
+  include_task: '{{tgs_task_to_include}}.yml'
