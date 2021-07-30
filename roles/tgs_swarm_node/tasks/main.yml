@@ -4,6 +4,11 @@
   loop_control:
     loop_var: docker_swarm_node_item
 
+- name: Create compose storage folder
+  file:
+    path: "{{compose_storage_folder}}/tgs/{{tgs_server_name}}/"
+    state: directory
+
 - name: Generate Compose
   template:
     src: 'tgs.compose.yml.j2'
