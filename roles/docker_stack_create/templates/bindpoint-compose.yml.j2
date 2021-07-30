@@ -4,7 +4,7 @@ volumes:
   {% for volume_name, bindpoint in bindpoints.items() %}
   {{service_name}}-{{volume_name}}:
     external:
-      name: NFS-{{stack_name}}-{{service_name}}-{{volume_name}}
+      name: NFS-{{stack_name}}-{{service_name}}-{{volume_name}}-{{bindpoint.revision | default(service_imbude_defaults.network_bindpoints.defaults.revision)}}
   {% endfor %}
   {% endfor %}
 services:
