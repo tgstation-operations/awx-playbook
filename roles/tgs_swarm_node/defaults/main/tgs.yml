@@ -1,0 +1,20 @@
+tgs_container_image: 'tgstation/server:v4.12.1'
+
+# TGS directory in which the core config file and log files will exist
+tgs_dir: "/var/lib/tgs/{{tgs_server_name}}"
+# Where TGS configuration files are stored
+tgs_config_dir: '{{ tgs_dir }}/config'
+# Where TGS logs are stored
+tgs_logs_dir: '{{ tgs_dir }}/logs'
+
+# This only surpresses warnings about config versions
+tgs_config_version: "3.0.0" 
+
+# Log level used for TGS' output
+tgs_log_level: "Trace"
+
+tgs_docker_network: "tgs-net"
+
+tgs_allow_external: True
+
+tgs_controller_allow_external: True

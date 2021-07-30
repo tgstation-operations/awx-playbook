@@ -1,0 +1,30 @@
+# Stack name must be unique. (ignored for the controller)
+tgs_stack_name: "tgs-{{tgs_server_name}}"
+
+# Should match what was set when the controller was created. (overrides tgs_stack_name when deploying the controller)
+tgs_controller_stack_name: 'tgs-controller'
+
+# Hostname this node can be reached at by all nodes.
+# leave default to use docker's dns resolution
+tgs_hostname: '{{tgs_stack_name}}_tgs'
+
+# Hostname controller can be reached at by all nodes.
+# leave default to use docker's dns resolution
+# overrides tgs_hostname when deploying the controller
+tgs_controller_hostname: '{{tgs_controller_stack_name}}_tgs-controller'
+
+# The hostname for the postgres database
+# leave default to use docker's dns resolution
+postgres_host: '{{tgs_controller_stack_name}}_postgres'
+
+# External port for Postgres. Leave default (0) to disable external communications
+postgres_external_port: 0
+
+# DB to store tgs data in
+postgres_db: "tgs"
+
+# User for postgres db
+postgres_user: "tgs_user"
+
+# Folder on the docker manager to store generated compose files
+compose_storage_folder: "~/ansible-run/compose-store"

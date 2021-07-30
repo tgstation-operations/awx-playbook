@@ -1,0 +1,44 @@
+version: "3.2"
+networks:
+  {{ tgs_docker_network }}:
+    external: True
+services:
+  {% if tgs_controller %}
+  postgres:
+    image: "{{ postgres_container_image }}"
+    networks:
+      - {{tgs_docker_network}}
+    {% if postgres_external_port > 0 and postgres_external_port < 65535 %}
+    ports:
+      - '{{ postgres_external_port }}:5432'
+    {% endif %}
+    environment:
+      POSTGRES_DB: '{{ postgres_db }}'
+      POSTGRES_USER: '{{ postgres_user }}'
+      POSTGRES_PASSWORD: '{{ SECRET_postgres_password }}'
+  {% endif %}
+  tgs{{'-controller' if tgs_controller else ''}}:
+    image: '{{ tgs_container_image }}'
+    networks:
+      - {{tgs_docker_network}}
+    deploy:
+      placement:
+        constraints: 
+          - node.labels.tgs_ready_{{ tgs_server_name }} == ready
+
+    {% if ((not tgs_controller) and tgs_allow_external) or (tgs_controller and tgs_controller_allow_external) or (tgs_game_port > 0 and tgs_game_port < 65535) %}
+    ports: 
+    {% endif %}
+      {% if ((not tgs_controller) and tgs_allow_external) or (tgs_controller and tgs_controller_allow_external) %}
+      - '{{ tgs_api_port if not tgs_controller else tgs_controller_api_port }}:{{ tgs_api_port if not tgs_controller else tgs_controller_api_port }}'
+      {% endif %}
+      {% if (tgs_game_port > 0 and tgs_game_port < 65535) %}
+      - '{{tgs_game_port}}:{{tgs_game_port}}'
+      {% endif %}
+    volumes:
+      - '{{ tgs_config_dir }}:/config_data'
+      - '{{ tgs_logs_dir }}:/tgs_logs'
+    cap_add:
+      - 'SYS_NICE'
+    stop_signal: SIGUSR1
+    stop_grace_period: 6h5m

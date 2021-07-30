@@ -1,0 +1,40 @@
+General:
+  GitHubAccessToken: "{{ SECRET_github_access_token }}"
+  SetupWizardMode: Never
+  ApiPort: {{ tgs_api_port if not tgs_controller else tgs_controller_api_port }}
+{% if tgs_log_level %}
+FileLogging:
+  LogLevel: {{ tgs_log_level }}
+{% endif %}
+{% if tgs_config_version %}
+  ConfigVersion: "{{ tgs_config_version }}"
+{% endif %}
+Database:
+  DatabaseType: PostgresSql # bit of a bruh moment
+  ServerVersion: "{{ postgres_version }}"
+  ConnectionString: "User ID={{ postgres_user }};Password={{ SECRET_postgres_password }};Host={{ postgres_host }};Port={{ postgres_external_port if postgres_external_port > 0 and postgres_external_port < 65535 else 5432 }};Database={{ postgres_db }};"
+ControlPanel:
+  Enable: true
+{% if tgs_allowed_origins %}
+  AllowedOrigins: {{ tgs_allowed_origins }}
+{% endif %}
+Swarm:
+  PrivateKey: "{{ SECRET_tgs_swarm_private_key }}"
+{% if not tgs_controller %}
+  ControllerAddress: "http://{{ tgs_controller_hostname }}:{{ tgs_controller_api_port }}/"
+  Address: "http://{{ tgs_hostname }}:{{ tgs_api_port }}/"
+  Identifier: "{{ tgs_stack_name }}"
+{% else %}
+  Address: "http://{{ tgs_controller_hostname }}:{{ tgs_controller_api_port }}/"
+  Identifier: "{{ tgs_controller_stack_name }}"
+{% endif %}
+
+{% if tgs_keycloak_client_id is defined and tgs_keycloak_client_id %}
+Security:
+  OAuth:
+    Keycloak:
+      ClientId: "{{ tgs_keycloak_client_id }}"
+      ClientSecret: "{{ SECRET_keycloak_client_secret }}"
+      RedirectUrl: "{{ tgs_keycloak_redirect_url }}"
+      ServerUrl: "{{ tgs_keycloak_server_url }}"
+{% endif %}
