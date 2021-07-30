@@ -29,7 +29,7 @@ Swarm:
   Identifier: "{{ tgs_controller_stack_name }}"
 {% endif %}
 
-{% if tgs_keycloak_client_id %}
+{% if tgs_keycloak_client_id is defined and tgs_keycloak_client_id %}
 Security:
   OAuth:
     Keycloak:

@@ -34,5 +34,3 @@
     hostname: "{{ docker_data['host_info']['Swarm']['NodeID']  }}"
     #ugly json encoding so the key can include a variable
     labels: '{ "tgs_ready_{{ tgs_server_name }}": "ready" }'
-  delegate_to: "{{docker_swarm_node_item}}"
-  delegate_facts: True
