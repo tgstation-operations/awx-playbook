@@ -1,0 +1,9 @@
+{
+	"editor.wordWrap": "on",
+	"editor.wrappingIndent": "indent",
+	"files.associations": {
+		"**/*.yml": "ansible"
+	},
+	"files.insertFinalNewline": true,
+	"telemetry.enableCrashReporter": false
+}
