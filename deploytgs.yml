@@ -13,9 +13,6 @@
 
 - hosts: docker_swarm_managers
   run_once: True
-  vars:
-    tgs_allow_external: False
-    tgs_controller_allow_external: False
   roles:
   - role: tgs_swarm_node
     tgs_controller: True
