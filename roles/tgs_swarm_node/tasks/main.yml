@@ -14,4 +14,4 @@
 - name: Deploy tgs stack
   vars:
     tgs_task_to_include: "{{'create_tgs_swarm_controller' if tgs_controller else 'create_tgs_swarm_node'}}"
-  include_task: '{{tgs_task_to_include}}.yml'
+  include_tasks: '{{tgs_task_to_include}}.yml'
