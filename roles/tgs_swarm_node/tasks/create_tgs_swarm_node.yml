@@ -15,5 +15,5 @@
         "tgs":
           "tgs-instance":
             src: "/tgs4_instances"
-            dest: "/tgs/game_servers/{{tgs_server_name}}"
+            dest: "tgs/game_servers/{{tgs_server_name}}"
             scope: global
