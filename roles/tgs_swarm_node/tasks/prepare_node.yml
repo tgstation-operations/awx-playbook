@@ -15,6 +15,15 @@
   delegate_to: "{{docker_swarm_node_item}}"
   delegate_facts: True
 
+- name: Create TGS log file directory
+  file:
+    path: '{{ tgs_log_dir }}'
+    state: directory
+    mode: '0740'
+  delegate_to: "{{docker_swarm_node_item}}"
+  delegate_facts: True
+
+
 - name: Get local docker node information
   docker_host_info:
     debug: no
