@@ -17,7 +17,7 @@
 
 - name: Create TGS log file directory
   file:
-    path: '{{ tgs_log_dir }}'
+    path: '{{ tgs_logs_dir }}'
     state: directory
     mode: '0740'
   delegate_to: "{{docker_swarm_node_item}}"
