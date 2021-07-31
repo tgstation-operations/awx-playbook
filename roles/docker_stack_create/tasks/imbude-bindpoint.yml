@@ -19,7 +19,7 @@
       name: "dockerstore/{{nfs_namespace}}/{{zfs_target_prefix}}/{{zfs_target_suffix}}"
       state: present
       extra_zfs_properties:
-        sharenfs: "sec=sys{{',rw=@' ~ zfs_rw_permission if (zfs_rw_permission | length) > 1 else ''}}{{',ro=@' ~ zfs_ro_permission if (zfs_ro_permission | length) > 1 else ''}}{{'rw=@localhost,ro=@localhost' if ((zfs_rw_permission~zfs_ro_permission) | length) <= 2 else ''}}"
+        sharenfs: "no_root_squash,sec=sys{{',rw=@' ~ zfs_rw_permission if (zfs_rw_permission | length) > 1 else ''}}{{',ro=@' ~ zfs_ro_permission if (zfs_ro_permission | length) > 1 else ''}}{{'rw=@localhost,ro=@localhost' if ((zfs_rw_permission~zfs_ro_permission) | length) <= 2 else ''}}"
     when: imbude_bindpoints_volume.create | default(True)
       
     delegate_to: "{{groups['nas'][0]}}"
