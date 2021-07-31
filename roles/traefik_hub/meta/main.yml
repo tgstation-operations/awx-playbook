@@ -21,7 +21,7 @@ dependencies:
           
               
       compose:
-        version: "3.2"
+        version: "3.8"
         services:
           traefik:
             image: traefik
@@ -101,8 +101,8 @@ dependencies:
                 condition: any
         secrets:
           cf-dns-token:
-            external:
-              name: "cf-dns-token-v{{cf_dns_secret_version}}"
+            external: True
+            name: "cf-dns-token-v{{cf_dns_secret_version}}"
           cf-zone-token:
-            external:
-              name: "cf-zone-token-v{{cf_zone_secret_version}}"
+            external: True
+            name: "cf-zone-token-v{{cf_zone_secret_version}}"

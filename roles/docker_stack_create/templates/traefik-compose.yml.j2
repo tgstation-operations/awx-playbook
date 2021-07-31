@@ -1,8 +1,8 @@
-version: "3.2"
+version: "3.8"
 networks:
   traefik:
-    external:
-      name: 'traefik'
+    external: True
+    name: 'traefik'
 services:
   {% for service_name, routes in service_imbude.traefik.items() %}
   {{service_name}}:
