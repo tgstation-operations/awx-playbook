@@ -2,3 +2,8 @@
   docker_swarm:
     state: present
   register: result
+  tags:
+    - swarm-infa-dep
+    - swarm-infa
+    - tg-infa
+    - useless-preamble
