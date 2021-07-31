@@ -13,22 +13,37 @@
       - python3-pip
       - virtualenv
       - python3-setuptools
+  tags:
+    - core-dep
+    - tg-dep
 
 - name: Add Docker GPG apt Key
   apt_key:
     url: https://download.docker.com/linux/debian/gpg
     state: present
+  tags:
+    - docker-dep
+    - tg-dep
+
 
 - name: Add Docker Repository
   apt_repository:
     repo: deb https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable
     state: present
+  tags:
+    - docker-dep
+    - tg-dep
+    - useless-preamble
 
 - name: Update apt and install docker-ce
   apt: 
     update_cache: true
     state: latest
     name: docker-ce
+  tags:
+    - docker-dep
+    - tg-dep
+    - useless-preamble
 
 - name: Install required python modules
   pip:
@@ -36,3 +51,7 @@
     - docker
     - jsondiff
     - pyyaml
+  tags:
+    - docker-dep
+    - tg-dep
+    - useless-preamble

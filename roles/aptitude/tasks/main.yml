@@ -5,3 +5,7 @@
     cache_valid_time: 60
     update_cache: true 
     force_apt_get: true
+  tags:
+    - core-dep
+    - tg-dep
+    - useless-preamble
