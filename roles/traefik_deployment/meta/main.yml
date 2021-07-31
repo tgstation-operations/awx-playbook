@@ -23,7 +23,7 @@ dependencies:
               service_override: "api@internal"
               
       compose:
-        version: "3.2"
+        version: "3.8"
         services:
           traefik:
             image: traefik
