@@ -17,16 +17,26 @@
             route_rule: '{{ keycloak_traefik_rule }}'
             service_port: 8080
             sticky_loadbalance: TRUE
+      network_bindpoints:
+        "postgres":
+          "postgres-data":
+            src: "/var/lib/postgresql/data"
+            scope: service
+            permissions:
+              workers: none
+              managers: write
+              local_lan: none
+              global_lan: none
     compose:
       version: "3.8"
       services:
         postgres:
           image: "{{ postgres_container_image }}"
+          networks:
+          - keycloak-db
           deploy:
             placement:
               constraints: [ node.role == manager ]
-          volumes:
-            - '{{ postgres_data_directory }}:/var/lib/postgresql/data'
           ports:
             - '{{ postgres_external_port }}:5432'
           environment:
@@ -35,6 +45,8 @@
             POSTGRES_PASSWORD: '{{ postgres_password }}'
         keycloak:
           image: '{{ keycloak_container_image }}' # See https://github.com/ivangfr/keycloak-clustered
+          networks:
+          - keycloak-db
           deploy:
             mode: global
           ports:
@@ -50,3 +62,5 @@
             DB_PASSWORD: '{{ postgres_password }}'
             JGROUPS_DISCOVERY_PROTOCOL: JDBC_PING
             JGROUPS_DISCOVERY_PROPERTIES=datasource_jndi_name: java:jboss/datasources/KeycloakDS
+      networks:
+        - keycloak-db
