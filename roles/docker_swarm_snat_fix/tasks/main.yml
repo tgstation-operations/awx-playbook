@@ -1,0 +1,33 @@
+- name: Install ingress router
+  copy:
+    src: "docker-ingress-router.sh"
+    dest: "/usr/sbin/docker-ingress-router.sh"
+    mode: "700"
+  tags:
+    - swarm-infa-dep
+    - swarm-infa
+    - tg-infa
+    - useless-preamble
+
+- name: Install ingress router systemd service file
+  copy:
+    src: "docker-ingress-router.service"
+    dest: "/etc/systemd/system/docker-ingress-router.service"
+    mode: "744"
+  tags:
+    - swarm-infa-dep
+    - swarm-infa
+    - tg-infa
+    - useless-preamble
+
+- name: Activate ingress router systemd service
+  systemd:
+    name: "docker-ingress-router"
+    daemon_reload: Yes
+    enabled: Yes
+    state: started
+  tags:
+    - swarm-infa-dep
+    - swarm-infa
+    - tg-infa
+    - useless-preamble
