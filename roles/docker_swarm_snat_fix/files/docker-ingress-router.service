@@ -1,0 +1,13 @@
+[Unit]
+Description=docker-ingress-router
+After=docker.service
+BindsTo=docker.service
+ReloadPropagatedFrom=docker.service
+
+[Service]
+Type=exec
+ExecStart=/usr/sbin/docker-ingress-router.sh
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
