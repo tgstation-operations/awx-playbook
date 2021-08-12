@@ -6,7 +6,7 @@ ReloadPropagatedFrom=docker.service
 
 [Service]
 Type=exec
-ExecStart=/usr/sbin/docker-ingress-router.sh
+ExecStart=/usr/sbin/docker-ingress-router.sh --install
 Restart=always
 
 [Install]
