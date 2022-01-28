@@ -17,6 +17,7 @@ ControlPanel:
 {% if tgs_allowed_origins %}
     AllowedOrigins: {{ tgs_allowed_origins }}
 {% endif %}
+    Channel: "https://tgstation.github.io/tgstation-server-webpanel/api/${Major}.${Minor}.${Patch}"
 Swarm:
     PrivateKey: "{{ tgs_swarm_private_key }}"
 {% if tgs_swarm_controller %}
