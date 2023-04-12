@@ -1,4 +1,4 @@
-tgs_container_image: 'tgstation/server:v5.8.0'
+tgs_container_image: 'tgstation/server:v5.9.0'
 
 # TGS directory in which the core config file and log files will exist
 tgs_dir: "/var/lib/tgs/{{tgs_server_name}}"
